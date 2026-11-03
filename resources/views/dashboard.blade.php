@@ -109,6 +109,20 @@
             <div class="stat-value">{{ $stats['completed'] }}</div>
             <p class="stat-note">One step at a time</p>
         </article>
+
+        <article class="card overdue-card">
+            <div class="stat-top">
+                <span class="stat-label">Overdue</span>
+                <span class="stat-icon stat-icon-overdue" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/>
+                        <path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                </span>
+            </div>
+            <div class="stat-value overdue-value">{{ $stats['overdue'] }}</div>
+            <p class="stat-note">Past due and unfinished</p>
+        </article>
     </section>
 
     <section class="panel overall-progress">
@@ -198,6 +212,44 @@
         </section>
     </div>
 
+    <section class="panel upcoming-panel" aria-labelledby="upcoming-title">
+        <div class="panel-head">
+            <div>
+                <h2 id="upcoming-title">Upcoming deadlines</h2>
+                <p class="sub">Your next five unfinished tasks due.</p>
+            </div>
+            <a class="text-link" href="{{ route('tasks.index', ['sort' => 'due_date', 'direction' => 'asc']) }}">View all tasks <span aria-hidden="true">→</span></a>
+        </div>
+
+        @if($upcomingTasks->isEmpty())
+            <p class="upcoming-empty">No upcoming deadlines. You’re all caught up.</p>
+        @else
+            <ul class="upcoming-list">
+                @foreach($upcomingTasks as $task)
+                    <li>
+                        <span class="upcoming-date">{{ $task->due_date->format('M d') }}</span>
+                        <a class="upcoming-title" href="{{ route('tasks.edit', $task) }}">{{ $task->title }}</a>
+                        <span class="priority {{ $task->priority }}">
+                            <span class="priority-dot" aria-hidden="true"></span>
+                            {{ ucfirst($task->priority) }}
+                        </span>
+                        <form method="POST" action="{{ route('tasks.cycle-status', $task) }}" class="status-cycle-form">
+                            @csrf
+                            <button
+                                class="pill status-cycle {{ $task->status }}"
+                                type="submit"
+                                aria-label="Change status for {{ $task->title }}. Current status: {{ $task->status }}."
+                                title="Click to cycle status"
+                            >
+                                {{ $task->status === 'todo' ? 'Todo' : 'In Progress' }}
+                            </button>
+                        </form>
+                    </li>
+                @endforeach
+            </ul>
+        @endif
+    </section>
+
     <div class="dashboard-bottom">
         <section class="panel recent-panel">
             <div class="panel-head">
@@ -266,16 +318,26 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="pill {{ $task->status }}">
-                                            <span class="status-dot" aria-hidden="true"></span>
-                                            {{ ucwords(str_replace('_', ' ', $task->status === 'todo' ? 'pending' : $task->status)) }}
-                                        </span>
+                                        <form method="POST" action="{{ route('tasks.cycle-status', $task) }}" class="status-cycle-form">
+                                            @csrf
+                                            <button
+                                                class="pill status-cycle {{ $task->status }}"
+                                                type="submit"
+                                                aria-label="Change status for {{ $task->title }}. Current status: {{ $task->status }}."
+                                                title="Click to cycle status"
+                                            >
+                                                {{ $task->status === 'todo' ? 'Todo' : ($task->status === 'completed' ? 'Done' : 'In Progress') }}
+                                            </button>
+                                        </form>
                                     </td>
                                     <td>
                                         @if($task->due_date)
                                             <span class="due-date {{ $task->status !== 'completed' && $task->due_date->lt(today()) ? 'overdue' : '' }}">
                                                 {{ $task->due_date->format('M d, Y') }}
                                             </span>
+                                            @if($task->status !== 'completed' && $task->due_date->lt(today()))
+                                                <span class="overdue-badge">Overdue</span>
+                                            @endif
                                         @else
                                             <span class="muted">No due date</span>
                                         @endif

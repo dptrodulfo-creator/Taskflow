@@ -17,7 +17,18 @@ class TaskPageController extends Controller
             'status' => ['nullable', Rule::in(['todo', 'in_progress', 'completed'])],
             'priority' => ['nullable', Rule::in(['low', 'medium', 'high'])],
             'due_date' => ['nullable', 'date_format:Y-m-d'],
+            'sort' => ['nullable', Rule::in(['created_at', 'due_date', 'priority', 'status'])],
+            'direction' => ['nullable', Rule::in(['asc', 'desc'])],
         ]);
+
+        $sort = $filters['sort'] ?? 'created_at';
+        $direction = $filters['direction'] ?? ($sort === 'created_at' ? 'desc' : 'asc');
+        $sortColumns = [
+            'created_at' => 'created_at',
+            'due_date' => 'due_date',
+            'priority' => 'priority',
+            'status' => 'status',
+        ];
 
         $tasks = $request->user()
             ->tasks()
@@ -33,11 +44,14 @@ class TaskPageController extends Controller
             ->when($filters['due_date'] ?? null, function ($query, string $dueDate): void {
                 $query->whereDate('due_date', $dueDate);
             })
-            ->latest()
+            ->orderBy($sortColumns[$sort], $direction)
+            ->when($sort !== 'created_at', function ($query): void {
+                $query->latest();
+            })
             ->paginate(10)
             ->withQueryString();
 
-        return view('task.index', compact('tasks'));
+        return view('task.index', compact('direction', 'sort', 'tasks'));
     }
 
     public function create(): View
@@ -78,6 +92,27 @@ class TaskPageController extends Controller
         $request->user()->tasks()->findOrFail($task->getKey())->delete();
 
         return redirect()->route('tasks.index')->with('success', 'Task deleted successfully.');
+    }
+
+    public function cycleStatus(Request $request, Task $task): RedirectResponse
+    {
+        $task = $request->user()->tasks()->findOrFail($task->getKey());
+        $statuses = ['todo', 'in_progress', 'completed'];
+        $currentIndex = array_search($task->status, $statuses, true);
+
+        abort_if($currentIndex === false, 409, 'This task has an unsupported status.');
+
+        $task->update([
+            'status' => $statuses[($currentIndex + 1) % count($statuses)],
+        ]);
+
+        $statusLabel = match ($task->status) {
+            'todo' => 'Todo',
+            'in_progress' => 'In Progress',
+            'completed' => 'Done',
+        };
+
+        return back()->with('success', 'Task status updated to '.$statusLabel.'.');
     }
 
     /**

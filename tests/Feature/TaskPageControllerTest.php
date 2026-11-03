@@ -134,4 +134,170 @@ class TaskPageControllerTest extends TestCase
         $response->assertOk()
             ->assertViewHas('tasks', fn ($tasks): bool => $tasks->pluck('title')->all() === ['Task due today']);
     }
+
+    public function test_task_list_combines_search_status_priority_and_due_date_filters(): void
+    {
+        $user = User::factory()->create();
+        $user->tasks()->create([
+            'title' => 'Prepare release checklist',
+            'status' => 'in_progress',
+            'priority' => 'high',
+            'due_date' => '2026-11-15',
+        ]);
+        $user->tasks()->create([
+            'title' => 'Prepare release notes',
+            'status' => 'todo',
+            'priority' => 'high',
+            'due_date' => '2026-11-15',
+        ]);
+        $user->tasks()->create([
+            'title' => 'Prepare release checklist',
+            'status' => 'in_progress',
+            'priority' => 'low',
+            'due_date' => '2026-11-15',
+        ]);
+
+        $response = $this->actingAs($user)->get(route('tasks.index', [
+            'search' => 'checklist',
+            'status' => 'in_progress',
+            'priority' => 'high',
+            'due_date' => '2026-11-15',
+        ]));
+
+        $response->assertOk()
+            ->assertViewHas('tasks', fn ($tasks): bool => $tasks->pluck('title')->all() === [
+                'Prepare release checklist',
+            ]);
+    }
+
+    public function test_task_list_can_sort_by_due_date_priority_and_status(): void
+    {
+        $user = User::factory()->create();
+        $user->tasks()->create([
+            'title' => 'Later low priority',
+            'priority' => 'low',
+            'status' => 'todo',
+            'due_date' => '2026-11-20',
+        ]);
+        $user->tasks()->create([
+            'title' => 'Soon high priority',
+            'priority' => 'high',
+            'status' => 'completed',
+            'due_date' => '2026-11-10',
+        ]);
+        $user->tasks()->create([
+            'title' => 'Middle medium priority',
+            'priority' => 'medium',
+            'status' => 'in_progress',
+            'due_date' => '2026-11-15',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('tasks.index', ['sort' => 'due_date', 'direction' => 'asc']))
+            ->assertOk()
+            ->assertViewHas('tasks', fn ($tasks): bool => $tasks->pluck('title')->all() === [
+                'Soon high priority',
+                'Middle medium priority',
+                'Later low priority',
+            ]);
+
+        $this->get(route('tasks.index', ['sort' => 'priority', 'direction' => 'asc']))
+            ->assertOk()
+            ->assertViewHas('tasks', fn ($tasks): bool => $tasks->pluck('title')->all() === [
+                'Soon high priority',
+                'Later low priority',
+                'Middle medium priority',
+            ]);
+
+        $this->get(route('tasks.index', ['sort' => 'status', 'direction' => 'asc']))
+            ->assertOk()
+            ->assertViewHas('tasks', fn ($tasks): bool => $tasks->pluck('title')->all() === [
+                'Soon high priority',
+                'Middle medium priority',
+                'Later low priority',
+            ]);
+    }
+
+    public function test_task_status_can_be_cycled_through_the_three_states(): void
+    {
+        $user = User::factory()->create();
+        $task = $user->tasks()->create(['title' => 'Cycle this task', 'status' => 'todo']);
+
+        $this->actingAs($user)
+            ->post(route('tasks.cycle-status', $task))
+            ->assertRedirect()
+            ->assertSessionHas('success', 'Task status updated to In Progress.');
+        $this->assertSame('in_progress', $task->refresh()->status);
+
+        $this->post(route('tasks.cycle-status', $task))
+            ->assertRedirect()
+            ->assertSessionHas('success', 'Task status updated to Done.');
+        $this->assertSame('completed', $task->refresh()->status);
+
+        $this->post(route('tasks.cycle-status', $task))
+            ->assertRedirect()
+            ->assertSessionHas('success', 'Task status updated to Todo.');
+        $this->assertSame('todo', $task->refresh()->status);
+
+        $this->assertDatabaseHas('task_activities', [
+            'user_id' => $user->id,
+            'task_id' => $task->id,
+            'action' => 'completed',
+        ]);
+    }
+
+    public function test_user_cannot_cycle_another_users_task_status(): void
+    {
+        $user = User::factory()->create();
+        $task = User::factory()->create()->tasks()->create(['title' => 'Private task']);
+
+        $this->actingAs($user)
+            ->post(route('tasks.cycle-status', $task))
+            ->assertNotFound();
+
+        $this->assertSame('todo', $task->refresh()->status);
+    }
+
+    public function test_task_list_displays_overdue_badges_and_delete_confirmation(): void
+    {
+        $this->travelTo('2026-11-03 12:00:00');
+
+        $user = User::factory()->create();
+        $user->tasks()->create([
+            'title' => 'Past due task',
+            'due_date' => '2026-11-02',
+        ]);
+        $user->tasks()->create([
+            'title' => 'Completed past due task',
+            'due_date' => '2026-11-01',
+            'status' => 'completed',
+        ]);
+        $user->tasks()->create([
+            'title' => 'Due today task',
+            'due_date' => '2026-11-03',
+        ]);
+
+        $response = $this->actingAs($user)
+            ->withSession(['success' => 'Task deleted successfully.'])
+            ->get(route('tasks.index'));
+
+        $response->assertOk()
+            ->assertSee('Overdue')
+            ->assertSee('data-confirm-delete', false)
+            ->assertSee('id="delete-confirmation"', false)
+            ->assertSee('Dismiss notification', false);
+        $this->assertSame(1, substr_count($response->getContent(), 'class="overdue-badge"'));
+    }
+
+    public function test_task_list_rejects_an_unapproved_sort_column(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('tasks.index', [
+            'sort' => 'title desc; DROP TABLE tasks',
+        ]));
+
+        $response->assertRedirect()
+            ->assertSessionHasErrors('sort');
+    }
 }

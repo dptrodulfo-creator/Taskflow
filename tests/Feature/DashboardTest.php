@@ -47,6 +47,7 @@ class DashboardTest extends TestCase
                 'pending' => 1,
                 'in_progress' => 1,
                 'completed' => 1,
+                'overdue' => 0,
             ])
             ->assertViewHas('progress', 33)
             ->assertSee('Prepare launch plan')
@@ -74,6 +75,7 @@ class DashboardTest extends TestCase
                 'pending' => 0,
                 'in_progress' => 0,
                 'completed' => 0,
+                'overdue' => 0,
             ])
             ->assertViewHas('progress', 0)
             ->assertSee('No tasks yet')
@@ -144,6 +146,77 @@ class DashboardTest extends TestCase
             ->assertSee('Recent activity')
             ->assertSee('Created')
             ->assertSee('Review release notes');
+    }
+
+    public function test_dashboard_counts_only_the_users_uncompleted_overdue_tasks(): void
+    {
+        $this->travelTo('2026-11-03 12:00:00');
+
+        $user = User::factory()->create();
+        $user->tasks()->create([
+            'title' => 'Overdue task',
+            'due_date' => '2026-11-02',
+            'status' => 'in_progress',
+        ]);
+        $user->tasks()->create([
+            'title' => 'Completed overdue task',
+            'due_date' => '2026-11-01',
+            'status' => 'completed',
+        ]);
+        $user->tasks()->create([
+            'title' => 'Due today',
+            'due_date' => '2026-11-03',
+        ]);
+        User::factory()->create()->tasks()->create([
+            'title' => 'Another users overdue task',
+            'due_date' => '2026-11-01',
+        ]);
+
+        $response = $this->actingAs($user)->get(route('dashboard'));
+
+        $response->assertOk()
+            ->assertViewHas('stats.overdue', 1)
+            ->assertSee('Overdue')
+            ->assertSee('Upcoming deadlines');
+    }
+
+    public function test_dashboard_lists_the_next_five_uncompleted_deadlines(): void
+    {
+        $this->travelTo('2026-11-03 12:00:00');
+
+        $user = User::factory()->create();
+        foreach ([
+            ['Due today', '2026-11-03', 'todo'],
+            ['Second deadline', '2026-11-04', 'in_progress'],
+            ['Third deadline', '2026-11-05', 'todo'],
+            ['Fourth deadline', '2026-11-06', 'todo'],
+            ['Fifth deadline', '2026-11-07', 'in_progress'],
+            ['Sixth deadline', '2026-11-08', 'todo'],
+            ['Past deadline', '2026-11-02', 'todo'],
+            ['Completed deadline', '2026-11-04', 'completed'],
+        ] as [$title, $dueDate, $status]) {
+            $user->tasks()->create([
+                'title' => $title,
+                'due_date' => $dueDate,
+                'status' => $status,
+            ]);
+        }
+        User::factory()->create()->tasks()->create([
+            'title' => 'Another users upcoming task',
+            'due_date' => '2026-11-03',
+        ]);
+
+        $response = $this->actingAs($user)->get(route('dashboard'));
+
+        $response->assertOk()
+            ->assertViewHas('upcomingTasks', fn ($tasks): bool => $tasks->pluck('title')->all() === [
+                'Due today',
+                'Second deadline',
+                'Third deadline',
+                'Fourth deadline',
+                'Fifth deadline',
+            ])
+            ->assertSee('Upcoming deadlines');
     }
 
     public function test_dashboard_redirects_guests_to_login(): void

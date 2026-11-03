@@ -11,6 +11,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::post('/tasks/{task}/cycle-status', [TaskPageController::class, 'cycleStatus'])->name('tasks.cycle-status');
     Route::resource('tasks', TaskPageController::class)->except(['show']);
 });
 

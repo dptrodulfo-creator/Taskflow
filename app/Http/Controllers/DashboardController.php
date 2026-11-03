@@ -29,6 +29,11 @@ class DashboardController extends Controller
             'pending' => (int) $taskCounts->get('todo', 0),
             'in_progress' => (int) $taskCounts->get('in_progress', 0),
             'completed' => (int) $taskCounts->get('completed', 0),
+            'overdue' => $user->tasks()
+                ->whereNotNull('due_date')
+                ->whereDate('due_date', '<', today())
+                ->where('status', '!=', 'completed')
+                ->count(),
         ];
 
         $recentTasks = $user
@@ -68,6 +73,13 @@ class DashboardController extends Controller
             ->orderBy('due_date')
             ->limit(3)
             ->get(['id', 'title', 'status', 'due_date']);
+        $upcomingTasks = $user->tasks()
+            ->whereNotNull('due_date')
+            ->whereDate('due_date', '>=', today())
+            ->where('status', '!=', 'completed')
+            ->orderBy('due_date')
+            ->limit(5)
+            ->get(['id', 'title', 'status', 'priority', 'due_date']);
 
         $calendarWeeks = [];
         $week = [];
@@ -115,6 +127,7 @@ class DashboardController extends Controller
             'recentTasks',
             'stats',
             'taskChart',
+            'upcomingTasks',
         ));
     }
 }

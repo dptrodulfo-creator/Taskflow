@@ -286,7 +286,7 @@
 
         .filters {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr auto;
+            grid-template-columns: minmax(160px, 2fr) repeat(5, minmax(110px, 1fr)) auto;
             gap: 10px;
             align-items: end;
         }
@@ -341,12 +341,77 @@
         }
 
         .alert {
-            padding: 12px 15px;
+            position: fixed;
+            top: 20px;
+            right: 22px;
+            z-index: 20;
+            display: flex;
+            width: min(420px, calc(100vw - 32px));
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 13px 15px;
             border-radius: 10px;
             background: #e8f4ec;
             color: var(--green);
-            margin-bottom: 18px;
             font-size: 14px;
+            box-shadow: 0 12px 35px rgba(24, 39, 67, .16);
+            transition: opacity .2s ease, transform .2s ease;
+        }
+
+        .toast-dismissed {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-8px);
+        }
+
+        .toast-close {
+            display: grid;
+            width: 28px;
+            height: 28px;
+            flex: 0 0 auto;
+            place-items: center;
+            border: 0;
+            border-radius: 7px;
+            background: transparent;
+            color: inherit;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .toast-close:hover {
+            background: rgba(40, 117, 210, .08);
+        }
+
+        .delete-confirmation {
+            width: min(440px, calc(100vw - 32px));
+            padding: 24px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            color: var(--ink);
+            box-shadow: 0 20px 70px rgba(24, 39, 67, .22);
+        }
+
+        .delete-confirmation::backdrop {
+            background: rgba(24, 39, 67, .42);
+            backdrop-filter: blur(2px);
+        }
+
+        .delete-confirmation h2 {
+            margin: 0 0 8px;
+            font-size: 18px;
+        }
+
+        .delete-confirmation p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .delete-confirmation .actions {
+            justify-content: flex-end;
+            margin-top: 22px;
         }
 
         .errors {
@@ -391,6 +456,14 @@
 
             .cards {
                 grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filters {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .filters .search {
+                grid-column: span 3;
             }
         }
 
@@ -654,6 +727,15 @@
             color: #33825a;
         }
 
+        .stat-icon-overdue {
+            background: #fff0ee;
+            color: #c04e43;
+        }
+
+        .overdue-value {
+            color: #c04e43;
+        }
+
         .stat-value {
             margin-top: 15px;
             font-size: 29px;
@@ -816,6 +898,40 @@
         .due-date.overdue {
             color: #bd5549;
             font-weight: 700;
+        }
+
+        .overdue-badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 99px;
+            padding: 4px 7px;
+            background: #fff0ee;
+            color: #bd5549;
+            font-size: 9px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .status-cycle-form {
+            display: inline-flex;
+            margin: 0;
+        }
+
+        .status-cycle {
+            border: 0;
+            cursor: pointer;
+            font-family: inherit;
+            transition: box-shadow .15s ease, transform .15s ease;
+        }
+
+        .status-cycle:hover {
+            box-shadow: 0 0 0 2px rgba(40, 117, 210, .15);
+            transform: translateY(-1px);
+        }
+
+        .status-cycle:focus-visible {
+            outline: 2px solid #2875d2;
+            outline-offset: 2px;
         }
 
         .empty {
@@ -1020,6 +1136,7 @@
         }
 
         .dashboard-stats {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
             margin: 0 0 16px;
         }
 
@@ -1295,6 +1412,58 @@
             margin-top: 16px;
         }
 
+        .upcoming-panel {
+            margin-top: 16px;
+        }
+
+        .upcoming-list {
+            display: grid;
+            gap: 0;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .upcoming-list li {
+            display: grid;
+            min-width: 0;
+            grid-template-columns: 68px minmax(0, 1fr) auto auto;
+            align-items: center;
+            gap: 14px;
+            padding: 11px 0;
+            border-bottom: 1px solid #f0f3f0;
+        }
+
+        .upcoming-list li:last-child {
+            border-bottom: 0;
+        }
+
+        .upcoming-date {
+            color: #3479c9;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .upcoming-title {
+            overflow: hidden;
+            color: #34425b;
+            font-size: 12px;
+            font-weight: 700;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .upcoming-title:hover {
+            color: #2875d2;
+        }
+
+        .upcoming-empty {
+            margin: 0;
+            color: #8a96a9;
+            font-size: 12px;
+        }
+
         .dashboard-filters {
             display: grid;
             grid-template-columns: minmax(130px, 1fr) minmax(110px, .7fr) auto;
@@ -1469,6 +1638,10 @@
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
+            .dashboard-stats {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
             .dashboard-grid {
                 grid-template-columns: minmax(0, 1.2fr) minmax(250px, .8fr);
             }
@@ -1539,6 +1712,19 @@
 
             .cards {
                 gap: 10px;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .upcoming-list li {
+                grid-template-columns: 50px minmax(0, 1fr) auto;
+                gap: 8px;
+            }
+
+            .upcoming-list .priority {
+                display: none;
             }
 
             .card {
@@ -1658,15 +1844,79 @@
     </aside>
 
     <main class="main">
-
-        @if(session('success'))
-            <div class="alert">{{ session('success') }}</div>
-        @endif
-
         @yield('content')
 
     </main>
 
 </div>
+
+@if(session('success'))
+    <div class="alert" role="status" aria-live="polite" data-toast>
+        <span>{{ session('success') }}</span>
+        <button class="toast-close" type="button" aria-label="Dismiss notification" data-toast-close>×</button>
+    </div>
+@endif
+
+<dialog class="delete-confirmation" id="delete-confirmation" aria-labelledby="delete-confirmation-title">
+    <h2 id="delete-confirmation-title">Delete this task?</h2>
+    <p>“<span data-delete-task-title></span>” will be permanently deleted. This action cannot be undone.</p>
+    <div class="actions">
+        <button class="btn btn-light" type="button" data-delete-cancel>Cancel</button>
+        <button class="btn btn-danger" type="button" data-delete-confirm>Delete task</button>
+    </div>
+</dialog>
+
+<script>
+    const deleteDialog = document.querySelector('#delete-confirmation');
+    const deleteTaskTitle = deleteDialog.querySelector('[data-delete-task-title]');
+    let taskFormToDelete = null;
+
+    document.addEventListener('submit', (event) => {
+        const form = event.target;
+
+        if (!(form instanceof HTMLFormElement) || !form.hasAttribute('data-confirm-delete')) {
+            return;
+        }
+
+        if (form.dataset.confirmed === 'true') {
+            delete form.dataset.confirmed;
+            return;
+        }
+
+        event.preventDefault();
+        taskFormToDelete = form;
+        deleteTaskTitle.textContent = form.dataset.taskTitle ?? 'this task';
+        deleteDialog.showModal();
+    });
+
+    deleteDialog.querySelector('[data-delete-cancel]').addEventListener('click', () => {
+        taskFormToDelete = null;
+        deleteDialog.close();
+    });
+
+    deleteDialog.querySelector('[data-delete-confirm]').addEventListener('click', () => {
+        if (!taskFormToDelete) {
+            return;
+        }
+
+        const form = taskFormToDelete;
+        taskFormToDelete = null;
+        form.dataset.confirmed = 'true';
+        deleteDialog.close();
+        form.requestSubmit();
+    });
+
+    const toast = document.querySelector('[data-toast]');
+
+    if (toast) {
+        toast.querySelector('[data-toast-close]').addEventListener('click', () => {
+            toast.classList.add('toast-dismissed');
+        });
+
+        window.setTimeout(() => {
+            toast.classList.add('toast-dismissed');
+        }, 5000);
+    }
+</script>
 </body>
 </html>

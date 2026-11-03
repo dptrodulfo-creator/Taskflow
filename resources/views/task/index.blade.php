@@ -20,7 +20,7 @@
     <form method="GET" action="{{ route('tasks.index') }}" class="filters">
 
         <div class="field search">
-            <label>Search Tasks</label>
+            <label for="task-search">Search Tasks</label>
 
             <input
                 id="task-search"
@@ -32,9 +32,9 @@
         </div>
 
         <div class="field">
-            <label>Status</label>
+            <label for="task-status-filter">Status</label>
 
-            <select name="status">
+            <select id="task-status-filter" name="status">
                 <option value="">All Statuses</option>
 
                 <option value="todo" @selected(request('status') === 'todo')>
@@ -52,9 +52,9 @@
         </div>
 
         <div class="field">
-            <label>Priority</label>
+            <label for="task-priority-filter">Priority</label>
 
-            <select name="priority">
+            <select id="task-priority-filter" name="priority">
                 <option value="">All Priorities</option>
 
                 @foreach(['low', 'medium', 'high'] as $priority)
@@ -76,7 +76,25 @@
             >
         </div>
 
-        <button class="btn" style="margin-bottom:16px">
+        <div class="field">
+            <label for="task-sort-filter">Sort by</label>
+            <select id="task-sort-filter" name="sort">
+                <option value="created_at" @selected($sort === 'created_at')>Recently added</option>
+                <option value="due_date" @selected($sort === 'due_date')>Due date</option>
+                <option value="priority" @selected($sort === 'priority')>Priority</option>
+                <option value="status" @selected($sort === 'status')>Status</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label for="task-direction-filter">Order</label>
+            <select id="task-direction-filter" name="direction">
+                <option value="asc" @selected($direction === 'asc')>Ascending</option>
+                <option value="desc" @selected($direction === 'desc')>Descending</option>
+            </select>
+        </div>
+
+        <button class="btn">
             Filter
         </button>
 
@@ -127,13 +145,30 @@
                             </td>
 
                             <td>
-                                <span class="pill {{ $task->status }}">
-                                    {{ str_replace('_', ' ', $task->status) }}
-                                </span>
+                                <form method="POST" action="{{ route('tasks.cycle-status', $task) }}" class="status-cycle-form">
+                                    @csrf
+                                    <button
+                                        class="pill status-cycle {{ $task->status }}"
+                                        type="submit"
+                                        aria-label="Change status for {{ $task->title }}. Current status: {{ $task->status }}."
+                                        title="Click to cycle status"
+                                    >
+                                        {{ $task->status === 'todo' ? 'Todo' : ($task->status === 'completed' ? 'Done' : 'In Progress') }}
+                                    </button>
+                                </form>
                             </td>
 
                             <td>
-                                {{ $task->due_date?->format('M d, Y') ?? '—' }}
+                                @if($task->due_date)
+                                    <span class="due-date {{ $task->status !== 'completed' && $task->due_date->lt(today()) ? 'overdue' : '' }}">
+                                        {{ $task->due_date->format('M d, Y') }}
+                                    </span>
+                                    @if($task->status !== 'completed' && $task->due_date->lt(today()))
+                                        <span class="overdue-badge">Overdue</span>
+                                    @endif
+                                @else
+                                    —
+                                @endif
                             </td>
 
                             <td>
@@ -147,7 +182,9 @@
                                     <form
                                         method="POST"
                                         action="{{ route('tasks.destroy', $task) }}"
-                                        onsubmit="return confirm('Are you sure you want to delete this task?')"
+                                        class="delete-task-form"
+                                        data-confirm-delete
+                                        data-task-title="{{ $task->title }}"
                                     >
                                         @csrf
                                         @method('DELETE')
