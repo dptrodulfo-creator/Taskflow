@@ -286,7 +286,7 @@
 
         .filters {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr auto;
+            grid-template-columns: 2fr 1fr 1fr 1fr auto;
             gap: 10px;
             align-items: end;
         }
@@ -422,16 +422,16 @@
         }
 
         :root {
-            --bg: #f5f8f6;
-            --ink: #1d2b22;
-            --muted: #78877d;
-            --line: #e8eee9;
-            --green: #237a52;
-            --green-soft: #edf7f0;
+            --bg: #f4f7fc;
+            --ink: #1b2740;
+            --muted: #7c879b;
+            --line: #e7ebf3;
+            --green: #2875d2;
+            --green-soft: #edf4ff;
         }
 
         body {
-            background: #f5f8f6;
+            background: #f4f7fc;
         }
 
         .shell {
@@ -439,6 +439,7 @@
         }
 
         .sidebar {
+            border-right-color: #e8edf5;
             position: sticky;
             top: 0;
             height: 100vh;
@@ -517,7 +518,7 @@
         }
 
         .nav a:hover {
-            background: #f6f8f6;
+            background: #f5f8fd;
             color: var(--ink);
             transform: translateX(2px);
         }
@@ -568,14 +569,14 @@
             gap: 8px;
             border-radius: 10px;
             padding: 0 16px;
-            box-shadow: 0 5px 12px rgba(35, 122, 82, .15);
+            box-shadow: 0 5px 12px rgba(40, 117, 210, .16);
             font-size: 13px;
             transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
         }
 
         .btn:hover {
-            background: #1b6845;
-            box-shadow: 0 7px 16px rgba(35, 122, 82, .2);
+            background: #2164b5;
+            box-shadow: 0 7px 16px rgba(40, 117, 210, .22);
             filter: none;
             transform: translateY(-1px);
         }
@@ -591,7 +592,7 @@
         }
 
         .card, .panel {
-            border-color: #e9eeea;
+            border-color: #e6ebf3;
             border-radius: 14px;
             box-shadow: 0 3px 14px rgba(30, 48, 36, .025);
         }
@@ -602,7 +603,7 @@
         }
 
         .card:hover {
-            border-color: #dce8df;
+            border-color: #d9e5f6;
             box-shadow: 0 9px 22px rgba(30, 48, 36, .055);
             transform: translateY(-2px);
         }
@@ -696,7 +697,7 @@
         }
 
         .progress span {
-            background: linear-gradient(90deg, #287f57, #5ca878);
+            background: linear-gradient(90deg, #2875d2, #6ea8f4);
             transition: width .35s ease;
         }
 
@@ -718,7 +719,7 @@
         }
 
         .text-link:hover {
-            color: #175f3e;
+            color: #1d5eae;
         }
 
         .text-link svg {
@@ -910,12 +911,521 @@
             font-size: 11px;
         }
 
+        .dashboard-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 23px;
+        }
+
+        .dashboard-header .eyebrow {
+            margin-bottom: 8px;
+            color: #8491a7;
+            text-transform: none;
+        }
+
+        .dashboard-header h1 {
+            margin-bottom: 5px;
+            font-size: clamp(24px, 2.5vw, 31px);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-avatar {
+            display: grid;
+            width: 40px;
+            height: 40px;
+            place-items: center;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            background: #e8f0fd;
+            box-shadow: 0 0 0 1px #e3eaf5;
+            color: #3474c3;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .quick-add {
+            position: relative;
+        }
+
+        .quick-add > summary {
+            list-style: none;
+            user-select: none;
+        }
+
+        .quick-add > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .quick-add-panel {
+            position: absolute;
+            z-index: 5;
+            top: calc(100% + 10px);
+            right: 0;
+            display: grid;
+            width: min(340px, calc(100vw - 32px));
+            gap: 12px;
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: #fff;
+            box-shadow: 0 14px 40px rgba(24, 39, 67, .16);
+        }
+
+        .quick-add-panel h2 {
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .quick-add-panel > input,
+        .quick-add-fields input,
+        .quick-add-fields select {
+            min-width: 0;
+            padding: 9px 10px;
+            font-size: 12px;
+        }
+
+        .quick-add-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 9px;
+        }
+
+        .quick-add-fields label {
+            display: grid;
+            gap: 5px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .quick-add-panel .btn {
+            width: 100%;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .dashboard-stats {
+            margin: 0 0 16px;
+        }
+
+        .dashboard-stats .card {
+            padding: 15px 17px 13px;
+        }
+
+        .dashboard-stats .stat-value {
+            margin-top: 9px;
+            font-size: 25px;
+        }
+
+        .overall-progress {
+            margin-top: 0;
+            margin-bottom: 16px;
+            padding: 15px 19px;
+        }
+
+        .overall-progress .progress {
+            margin-top: 11px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.65fr) minmax(285px, .9fr);
+            align-items: stretch;
+            gap: 16px;
+        }
+
+        .dashboard-grid > .panel,
+        .dashboard-bottom > .panel {
+            min-width: 0;
+            margin-top: 0;
+        }
+
+        .chart-panel,
+        .calendar-panel,
+        .recent-panel,
+        .activity-panel {
+            padding: 18px 19px;
+        }
+
+        .chart-panel,
+        .calendar-panel {
+            min-height: 325px;
+        }
+
+        .chart-legend {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: #7d8aa0;
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        .chart-legend span {
+            width: 8px;
+            height: 8px;
+            border-radius: 3px;
+            background: #5b9ae8;
+        }
+
+        .chart {
+            position: relative;
+            height: 235px;
+            margin-top: 13px;
+            padding: 8px 0 22px;
+        }
+
+        .chart-grid {
+            position: absolute;
+            inset: 9px 0 25px;
+            display: grid;
+            grid-template-rows: repeat(4, 1fr);
+        }
+
+        .chart-grid span {
+            border-top: 1px dashed #edf0f5;
+        }
+
+        .chart-bars {
+            position: relative;
+            display: grid;
+            height: 100%;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            align-items: end;
+            gap: 12px;
+        }
+
+        .chart-column {
+            display: grid;
+            height: 100%;
+            grid-template-rows: 18px minmax(0, 1fr) 18px;
+            justify-items: center;
+            gap: 4px;
+        }
+
+        .chart-count,
+        .chart-month {
+            color: #8a96a9;
+            font-size: 10px;
+        }
+
+        .chart-bar-track {
+            display: flex;
+            width: min(34px, 68%);
+            height: 100%;
+            align-items: end;
+            justify-content: center;
+        }
+
+        .chart-bar {
+            display: block;
+            width: 100%;
+            min-height: 0;
+            border-radius: 6px 6px 2px 2px;
+            background: linear-gradient(180deg, #71acef, #4188df);
+            transition: height .25s ease, filter .2s ease;
+        }
+
+        .chart-bar-track:hover .chart-bar {
+            filter: brightness(.92);
+        }
+
+        .chart-month {
+            font-size: 10px;
+        }
+
+        .calendar-panel .panel-head {
+            margin-bottom: 10px;
+        }
+
+        .calendar-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .calendar-controls a {
+            display: grid;
+            width: 28px;
+            height: 28px;
+            place-items: center;
+            border: 1px solid #e8edf5;
+            border-radius: 8px;
+            color: #64728a;
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        .calendar-controls a:hover {
+            border-color: #c9dcf5;
+            background: #f4f8ff;
+            color: #2875d2;
+        }
+
+        .calendar-month {
+            margin: 0 0 12px;
+            color: #37445d;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 4px 2px;
+        }
+
+        .calendar-weekday,
+        .calendar-day {
+            display: grid;
+            min-width: 0;
+            min-height: 30px;
+            place-items: center;
+            border-radius: 8px;
+            color: #59677e;
+            font-size: 10px;
+        }
+
+        .calendar-weekday {
+            min-height: 22px;
+            color: #9aa5b7;
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .calendar-day.outside-month {
+            color: #c0c8d3;
+        }
+
+        .calendar-day.today {
+            background: #2875d2;
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .calendar-day.has-tasks:not(.today) {
+            position: relative;
+            color: #286fc1;
+            font-weight: 700;
+        }
+
+        .calendar-day.has-tasks:not(.today)::after {
+            position: absolute;
+            bottom: 2px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #5897e4;
+            content: "";
+        }
+
+        .calendar-task-count {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+        }
+
+        .calendar-upcoming {
+            display: grid;
+            gap: 7px;
+            margin-top: 13px;
+            padding-top: 11px;
+            border-top: 1px solid #eef1f6;
+        }
+
+        .calendar-upcoming-title {
+            margin: 0;
+            color: #8a96a9;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .5px;
+            text-transform: uppercase;
+        }
+
+        .calendar-upcoming a {
+            display: flex;
+            min-width: 0;
+            align-items: center;
+            gap: 8px;
+            color: #4a5870;
+            font-size: 10px;
+        }
+
+        .calendar-task-date {
+            flex: 0 0 auto;
+            color: #3479c9;
+            font-weight: 700;
+        }
+
+        .calendar-task-title {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .calendar-empty,
+        .activity-empty {
+            margin: 15px 0 0;
+            color: #8a96a9;
+            font-size: 11px;
+        }
+
+        .dashboard-bottom {
+            display: grid;
+            grid-template-columns: minmax(0, 1.55fr) minmax(275px, .85fr);
+            align-items: stretch;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .dashboard-filters {
+            display: grid;
+            grid-template-columns: minmax(130px, 1fr) minmax(110px, .7fr) auto;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 9px;
+        }
+
+        .dashboard-filters input,
+        .dashboard-filters select {
+            min-width: 0;
+            height: 35px;
+            padding: 0 10px;
+            border-color: #e8edf4;
+            border-radius: 8px;
+            font-size: 11px;
+        }
+
+        .dashboard-search {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .dashboard-search svg {
+            position: absolute;
+            left: 9px;
+            width: 15px;
+            height: 15px;
+            color: #9aa5b7;
+            pointer-events: none;
+        }
+
+        .dashboard-search input {
+            padding-left: 31px;
+        }
+
+        .btn-filter {
+            min-height: 35px;
+            padding: 0 12px;
+            box-shadow: none;
+            font-size: 11px;
+        }
+
+        .dashboard-bottom table {
+            min-width: 440px;
+        }
+
+        .dashboard-bottom th {
+            padding-top: 9px;
+            padding-bottom: 9px;
+        }
+
+        .dashboard-bottom td {
+            padding-top: 11px;
+            padding-bottom: 11px;
+        }
+
+        .dashboard-bottom .task-title {
+            color: #34425b;
+        }
+
+        .dashboard-bottom .task-title:hover {
+            color: #2875d2;
+        }
+
+        .activity-list {
+            display: grid;
+            gap: 15px;
+            margin: 15px 0 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .activity-list li {
+            display: flex;
+            min-width: 0;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .activity-icon {
+            display: grid;
+            width: 28px;
+            height: 28px;
+            flex: 0 0 auto;
+            place-items: center;
+            border-radius: 9px;
+            background: #edf4ff;
+            color: #3479c9;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .activity-icon.activity-completed {
+            background: #eaf6ee;
+            color: #35835a;
+        }
+
+        .activity-icon.activity-deleted {
+            background: #fff0ee;
+            color: #bd5549;
+        }
+
+        .activity-copy {
+            display: grid;
+            min-width: 0;
+            gap: 4px;
+            padding-top: 1px;
+            color: #68758a;
+            font-size: 10px;
+            line-height: 1.45;
+        }
+
+        .activity-copy strong {
+            color: #34425b;
+            font-weight: 700;
+        }
+
+        .activity-copy time {
+            color: #9aa5b7;
+            font-size: 9px;
+        }
+
         @media(max-width: 900px) {
             .shell {
                 grid-template-columns: 1fr;
             }
 
             .sidebar {
+                min-width: 0;
                 position: static;
                 height: auto;
                 min-height: 0;
@@ -932,22 +1442,39 @@
 
             .nav {
                 display: flex;
+                max-width: 100%;
+                min-width: 0;
                 gap: 5px;
                 overflow-x: auto;
+                scrollbar-width: none;
+            }
+
+            .nav::-webkit-scrollbar {
+                display: none;
             }
 
             .nav a {
+                flex: 0 0 auto;
                 min-height: 40px;
                 padding: 0 12px;
                 white-space: nowrap;
             }
 
             .main {
+                min-width: 0;
                 padding-top: 29px;
             }
 
             .cards {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .dashboard-grid {
+                grid-template-columns: minmax(0, 1.2fr) minmax(250px, .8fr);
+            }
+
+            .dashboard-bottom {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -969,6 +1496,45 @@
 
             .topbar .btn {
                 width: 100%;
+            }
+
+            .dashboard-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .header-actions .quick-add {
+                flex: 1;
+            }
+
+            .quick-add > summary {
+                width: 100%;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-panel,
+            .calendar-panel {
+                min-height: 0;
+            }
+
+            .chart {
+                height: 200px;
+            }
+
+            .dashboard-filters {
+                grid-template-columns: 1fr auto;
+            }
+
+            .dashboard-search {
+                grid-column: 1 / -1;
             }
 
             .cards {
@@ -1039,11 +1605,34 @@
                 My Tasks
             </a>
 
+            <a href="{{ route('dashboard') }}#calendar">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                    <rect x="4" y="6" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.7"/>
+                    <path d="M8 4v4m8-4v4M4 10h16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                </svg>
+                Calendar
+            </a>
+
+            <a href="{{ route('dashboard') }}#task-report">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 19V9m7 10V5m7 14v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Reports
+            </a>
+
             <a href="{{ route('tasks.create') }}" class="{{ request()->routeIs('tasks.create') ? 'active' : '' }}">
                 <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
                     <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
                 </svg>
                 New Task
+            </a>
+
+            <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/>
+                    <path d="m19.4 15 .1.1a1.7 1.7 0 0 1-2.4 2.4l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.2a1.7 1.7 0 0 1-3.4 0v-.2a1.7 1.7 0 0 0-2.9-1.2l-.1.1a1.7 1.7 0 0 1-2.4-2.4l.1-.1a1.7 1.7 0 0 0-1.2-2.9H4a1.7 1.7 0 0 1 0-3.4h.2a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a1.7 1.7 0 0 1 2.4-2.4l.1.1a1.7 1.7 0 0 0 2.9-1.2V4a1.7 1.7 0 0 1 3.4 0v.2a1.7 1.7 0 0 0 2.9 1.2l.1-.1a1.7 1.7 0 0 1 2.4 2.4l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.2a1.7 1.7 0 0 1 0 3.4h-.2a1.7 1.7 0 0 0-1.2.9Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+                </svg>
+                Settings
             </a>
         </nav>
 

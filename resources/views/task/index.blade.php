@@ -23,6 +23,7 @@
             <label>Search Tasks</label>
 
             <input
+                id="task-search"
                 type="text"
                 name="search"
                 value="{{ request('search') }}"
@@ -63,6 +64,16 @@
                     </option>
                 @endforeach
             </select>
+        </div>
+
+        <div class="field">
+            <label for="due-date-filter">Due date</label>
+            <input
+                id="due-date-filter"
+                type="date"
+                name="due_date"
+                value="{{ request('due_date') }}"
+            >
         </div>
 
         <button class="btn" style="margin-bottom:16px">

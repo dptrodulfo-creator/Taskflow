@@ -16,6 +16,7 @@ class TaskPageController extends Controller
             'search' => ['nullable', 'string', 'max:150'],
             'status' => ['nullable', Rule::in(['todo', 'in_progress', 'completed'])],
             'priority' => ['nullable', Rule::in(['low', 'medium', 'high'])],
+            'due_date' => ['nullable', 'date_format:Y-m-d'],
         ]);
 
         $tasks = $request->user()
@@ -28,6 +29,9 @@ class TaskPageController extends Controller
             })
             ->when($filters['priority'] ?? null, function ($query, string $priority): void {
                 $query->where('priority', $priority);
+            })
+            ->when($filters['due_date'] ?? null, function ($query, string $dueDate): void {
+                $query->whereDate('due_date', $dueDate);
             })
             ->latest()
             ->paginate(10)
@@ -43,9 +47,15 @@ class TaskPageController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $request->user()->tasks()->create($request->validate($this->rules()));
+        $validated = $request->validate($this->rules() + [
+            'return_to' => ['nullable', Rule::in(['dashboard'])],
+        ]);
+        $returnTo = $validated['return_to'] ?? 'tasks.index';
+        unset($validated['return_to']);
 
-        return redirect()->route('tasks.index')->with('success', 'Task created successfully.');
+        $request->user()->tasks()->create($validated);
+
+        return redirect()->route($returnTo)->with('success', 'Task created successfully.');
     }
 
     public function edit(Request $request, Task $task): View

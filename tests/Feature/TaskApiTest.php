@@ -57,6 +57,11 @@ class TaskApiTest extends TestCase
             'user_id' => $otherUser->id,
             'title' => 'Prepare release',
         ]);
+        $this->assertDatabaseHas('task_activities', [
+            'user_id' => $user->id,
+            'task_title' => 'Prepare release',
+            'action' => 'created',
+        ]);
     }
 
     public function test_invalid_task_data_returns_validation_errors(): void
@@ -106,6 +111,11 @@ class TaskApiTest extends TestCase
             'user_id' => $user->id,
             'title' => 'Finalize plan',
             'status' => 'completed',
+        ]);
+        $this->assertDatabaseHas('task_activities', [
+            'user_id' => $user->id,
+            'task_title' => 'Finalize plan',
+            'action' => 'completed',
         ]);
     }
 
