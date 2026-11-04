@@ -20,6 +20,7 @@ class AuthenticationTest extends TestCase
     public function test_users_can_authenticate_using_the_login_screen(): void
     {
         $user = User::factory()->create();
+        $this->travelTo('2026-11-04 09:00:00');
 
         $response = $this->post('/login', [
             'email' => $user->email,
@@ -27,6 +28,7 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
+        $this->assertSame('2026-11-04 09:00:00', $user->refresh()->last_login_at->toDateTimeString());
         $response->assertRedirect(route('dashboard', absolute: false));
     }
 

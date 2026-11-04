@@ -16,6 +16,15 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'username',
+        'profile_photo_path',
+        'theme',
+        'locale',
+        'timezone',
+        'notify_upcoming_deadlines',
+        'notify_overdue_tasks',
+        'notify_task_completions',
+        'last_login_at',
     ];
 
     protected $hidden = [
@@ -28,6 +37,10 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'notify_upcoming_deadlines' => 'boolean',
+            'notify_overdue_tasks' => 'boolean',
+            'notify_task_completions' => 'boolean',
+            'last_login_at' => 'datetime',
         ];
     }
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -967,6 +967,114 @@
             font-size: 12px;
         }
 
+        .notification-sections {
+            display: grid;
+            gap: 16px;
+        }
+
+        .notification-section {
+            margin-top: 0;
+        }
+
+        .notification-section-count {
+            display: inline-flex;
+            min-width: 25px;
+            height: 25px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 99px;
+            background: #edf4ff;
+            color: #3479c9;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .notification-section.overdue .notification-section-count {
+            background: #fff0ee;
+            color: #bd5549;
+        }
+
+        .notification-list {
+            display: grid;
+            gap: 0;
+        }
+
+        .notification-item {
+            display: grid;
+            min-width: 0;
+            grid-template-columns: 38px minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 13px;
+            padding: 13px 0;
+            border-bottom: 1px solid #f0f3f0;
+        }
+
+        .notification-item:last-child {
+            border-bottom: 0;
+        }
+
+        .notification-icon {
+            display: grid;
+            width: 36px;
+            height: 36px;
+            place-items: center;
+            border-radius: 11px;
+            background: #edf4ff;
+            color: #3479c9;
+        }
+
+        .notification-icon.overdue {
+            background: #fff0ee;
+            color: #bd5549;
+        }
+
+        .notification-icon.completed {
+            background: #eaf6ee;
+            color: #328057;
+        }
+
+        .notification-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .notification-copy {
+            display: grid;
+            min-width: 0;
+            gap: 4px;
+        }
+
+        .notification-copy strong {
+            overflow: hidden;
+            color: #34425b;
+            font-size: 12px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .notification-copy span {
+            color: #8a96a9;
+            font-size: 11px;
+        }
+
+        .notification-link {
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .notification-link:hover {
+            color: #1d5eae;
+        }
+
+        .notification-empty {
+            margin: 0;
+            padding: 15px 0 5px;
+            color: #8a96a9;
+            font-size: 12px;
+        }
+
         .sidebar-bottom {
             display: flex;
             flex-direction: column;
@@ -1748,10 +1856,592 @@
                 white-space: nowrap;
             }
         }
+
+        .settings-sections {
+            display: grid;
+            gap: 16px;
+            max-width: 980px;
+        }
+
+        .settings-panel {
+            margin: 0;
+            padding: 24px;
+        }
+
+        .settings-section-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            margin-bottom: 22px;
+        }
+
+        .settings-section-heading h2 {
+            margin: 1px 0 5px;
+            color: #29394d;
+            font-size: 16px;
+        }
+
+        .settings-section-heading p {
+            margin: 0;
+            color: #8491a7;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .settings-section-icon {
+            display: grid;
+            width: 38px;
+            height: 38px;
+            flex: 0 0 auto;
+            place-items: center;
+            border-radius: 11px;
+            background: #edf4ff;
+            color: #3479c9;
+        }
+
+        .settings-section-icon svg {
+            width: 19px;
+            height: 19px;
+        }
+
+        .settings-section-icon-security {
+            background: #f0edff;
+            color: #7562ba;
+        }
+
+        .settings-section-icon-preferences {
+            background: #eaf6ee;
+            color: #33825a;
+        }
+
+        .settings-section-icon-danger {
+            background: #fff0ee;
+            color: #c04e43;
+        }
+
+        .settings-form {
+            display: grid;
+            gap: 18px;
+        }
+
+        .settings-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .settings-field {
+            display: grid;
+            min-width: 0;
+            align-content: start;
+            gap: 7px;
+        }
+
+        .settings-field label,
+        .settings-avatar-control > label {
+            color: #536057;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .settings-field input,
+        .settings-field select,
+        .settings-password-input input,
+        .settings-revoke-actions input,
+        .settings-delete-dialog input {
+            width: 100%;
+            min-width: 0;
+            min-height: 42px;
+            padding: 0 12px;
+            border: 1px solid #e3e9f1;
+            border-radius: 9px;
+            background: #fff;
+            color: #34425b;
+            font-size: 12px;
+        }
+
+        .settings-readonly {
+            display: flex;
+            min-height: 42px;
+            align-items: center;
+            margin: 0;
+            color: #758197;
+            font-size: 12px;
+        }
+
+        .settings-help {
+            margin: 0;
+            color: #8a96a9;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .settings-help a {
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .settings-error {
+            color: #bd5549;
+            font-size: 11px;
+        }
+
+        .settings-avatar-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .settings-avatar {
+            width: 68px;
+            height: 68px;
+            flex: 0 0 auto;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 0 0 1px #e3eaf5;
+        }
+
+        .settings-avatar-placeholder {
+            display: grid;
+            place-items: center;
+            background: #e8f0fd;
+            color: #3474c3;
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        img.account-avatar {
+            object-fit: cover;
+        }
+
+        .settings-avatar-control {
+            display: grid;
+            min-width: 0;
+            gap: 6px;
+        }
+
+        .settings-file-input {
+            max-width: 360px;
+            min-height: 35px !important;
+            padding: 4px !important;
+            background: transparent !important;
+            font-size: 11px !important;
+        }
+
+        .settings-file-input::file-selector-button {
+            min-height: 26px;
+            margin-right: 9px;
+            padding: 0 9px;
+            border: 0;
+            border-radius: 6px;
+            background: #edf4ff;
+            color: #3479c9;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .settings-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-top: 2px;
+        }
+
+        .settings-inline-success {
+            color: #33825a;
+            font-size: 12px;
+        }
+
+        .settings-password-input {
+            position: relative;
+            display: flex;
+            min-width: 0;
+            align-items: center;
+        }
+
+        .settings-password-input input {
+            padding-right: 58px;
+        }
+
+        .settings-password-toggle {
+            position: absolute;
+            right: 10px;
+            border: 0;
+            background: transparent;
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .password-strength {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #8a96a9;
+            font-size: 10px;
+        }
+
+        .password-strength-bars {
+            display: flex;
+            width: 96px;
+            gap: 4px;
+        }
+
+        .password-strength-bars span {
+            height: 4px;
+            flex: 1;
+            border-radius: 99px;
+            background: #e6ebf3;
+        }
+
+        .password-strength-bars span[data-active="true"] {
+            background: #e0a13c;
+        }
+
+        .password-strength-bars span[data-active="true"]:nth-child(n+3) {
+            background: #4a9b69;
+        }
+
+        .settings-notification-options {
+            display: grid;
+            gap: 0;
+        }
+
+        .settings-notification-options h3,
+        .settings-subheading {
+            margin: 0 0 6px;
+            color: #536057;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .settings-toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid #eef1f6;
+            cursor: pointer;
+        }
+
+        .settings-toggle-row > span {
+            display: grid;
+            gap: 4px;
+        }
+
+        .settings-toggle-row strong {
+            color: #34425b;
+            font-size: 12px;
+        }
+
+        .settings-toggle-row small {
+            color: #8a96a9;
+            font-size: 10px;
+        }
+
+        .settings-toggle-row input[type="checkbox"] {
+            width: 38px;
+            height: 21px;
+            flex: 0 0 auto;
+            appearance: none;
+            padding: 2px;
+            border: 0;
+            border-radius: 99px;
+            background: #cbd4e0;
+            cursor: pointer;
+            transition: background .18s ease;
+        }
+
+        .settings-toggle-row input[type="checkbox"]::before {
+            display: block;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            background: #fff;
+            content: "";
+            transition: transform .18s ease;
+        }
+
+        .settings-toggle-row input[type="checkbox"]:checked {
+            background: #2875d2;
+        }
+
+        .settings-toggle-row input[type="checkbox"]:checked::before {
+            transform: translateX(17px);
+        }
+
+        .settings-security-summary {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 22px;
+            padding: 13px 15px;
+            border: 1px solid #edf1f6;
+            border-radius: 10px;
+            background: #f8fafd;
+            font-size: 11px;
+        }
+
+        .settings-security-summary span {
+            color: #8290a4;
+        }
+
+        .settings-security-summary strong {
+            color: #3a485e;
+        }
+
+        .settings-subheading {
+            margin-bottom: 10px;
+        }
+
+        .settings-session-list {
+            display: grid;
+        }
+
+        .settings-session-row {
+            display: flex;
+            min-width: 0;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #eef1f6;
+        }
+
+        .settings-session-icon {
+            display: grid;
+            width: 35px;
+            height: 35px;
+            flex: 0 0 auto;
+            place-items: center;
+            border-radius: 10px;
+            background: #edf4ff;
+            color: #3479c9;
+        }
+
+        .settings-session-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .settings-session-copy {
+            display: grid;
+            min-width: 0;
+            flex: 1;
+            gap: 4px;
+        }
+
+        .settings-session-copy strong {
+            color: #34425b;
+            font-size: 11px;
+        }
+
+        .settings-session-copy small {
+            overflow: hidden;
+            color: #8a96a9;
+            font-size: 10px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .settings-text-button {
+            border: 0;
+            background: transparent;
+            color: #bd5549;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .settings-revoke-all {
+            display: grid;
+            gap: 12px;
+            margin-top: 19px;
+            padding: 15px;
+            border: 1px solid #f1e4e2;
+            border-radius: 10px;
+            background: #fffafa;
+        }
+
+        .settings-revoke-all strong {
+            color: #67413c;
+            font-size: 12px;
+        }
+
+        .settings-revoke-all p {
+            margin: 4px 0 0;
+            color: #987b76;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .settings-revoke-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+        }
+
+        .settings-revoke-actions input {
+            width: min(250px, 100%);
+        }
+
+        .settings-danger-zone {
+            border-color: #f2e4e2;
+        }
+
+        .settings-delete-dialog {
+            display: none;
+        }
+
+        .settings-delete-dialog[open] {
+            display: block;
+        }
+
+        .settings-delete-dialog h2 {
+            margin: 0 0 9px;
+            color: #29394d;
+            font-size: 17px;
+        }
+
+        .settings-delete-dialog p {
+            margin: 0 0 18px;
+            color: #78859a;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .settings-delete-dialog label {
+            display: block;
+            margin-bottom: 7px;
+            color: #536057;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .settings-status {
+            max-width: 980px;
+            margin-bottom: 16px;
+            padding: 12px 15px;
+            border: 1px solid #d5ecdd;
+            border-radius: 10px;
+            background: #edf8f0;
+            color: #287a52;
+            font-size: 12px;
+        }
+
+        body[data-theme="dark"] {
+            background: #111923;
+            color: #e1e9f2;
+        }
+
+        body[data-theme="dark"] .sidebar,
+        body[data-theme="dark"] .card,
+        body[data-theme="dark"] .panel,
+        body[data-theme="dark"] .quick-add-panel,
+        body[data-theme="dark"] .delete-confirmation {
+            border-color: #2b3a49;
+            background: #192532;
+            color: #e1e9f2;
+        }
+
+        body[data-theme="dark"] .brand-copy,
+        body[data-theme="dark"] .settings-section-heading h2,
+        body[data-theme="dark"] .settings-toggle-row strong,
+        body[data-theme="dark"] .settings-session-copy strong,
+        body[data-theme="dark"] .settings-security-summary strong,
+        body[data-theme="dark"] .task-title,
+        body[data-theme="dark"] .panel h2,
+        body[data-theme="dark"] h1 {
+            color: #e1e9f2;
+        }
+
+        body[data-theme="dark"] .nav a {
+            color: #a7b5c5;
+        }
+
+        body[data-theme="dark"] .nav a:hover {
+            background: #233344;
+            color: #f2f6fb;
+        }
+
+        body[data-theme="dark"] input,
+        body[data-theme="dark"] textarea,
+        body[data-theme="dark"] select,
+        body[data-theme="dark"] .settings-field input,
+        body[data-theme="dark"] .settings-field select,
+        body[data-theme="dark"] .settings-password-input input,
+        body[data-theme="dark"] .settings-revoke-actions input,
+        body[data-theme="dark"] .settings-delete-dialog input {
+            border-color: #354658;
+            background: #111b26;
+            color: #e1e9f2;
+        }
+
+        body[data-theme="dark"] td,
+        body[data-theme="dark"] .settings-toggle-row,
+        body[data-theme="dark"] .settings-session-row {
+            border-color: #2b3a49;
+        }
+
+        body[data-theme="dark"] .settings-readonly,
+        body[data-theme="dark"] .settings-section-heading p,
+        body[data-theme="dark"] .settings-help,
+        body[data-theme="dark"] .sub,
+        body[data-theme="dark"] .muted,
+        body[data-theme="dark"] .settings-session-copy small {
+            color: #9aabbd;
+        }
+
+        body[data-theme="dark"] .settings-security-summary,
+        body[data-theme="dark"] .settings-revoke-all {
+            border-color: #354658;
+            background: #15202b;
+        }
+
+        body[data-theme="dark"] .settings-revoke-all strong,
+        body[data-theme="dark"] .settings-delete-dialog h2 {
+            color: #f2d4d0;
+        }
+
+        body[data-theme="dark"] .settings-revoke-all p,
+        body[data-theme="dark"] .settings-delete-dialog p {
+            color: #b19b99;
+        }
+
+        body[data-theme="dark"] .settings-status {
+            border-color: #285d43;
+            background: #173a2a;
+            color: #b8e3c4;
+        }
+
+        body[data-theme="dark"] .settings-danger-zone {
+            border-color: #553b3b;
+        }
+
+        @media(max-width: 600px) {
+            .settings-panel {
+                padding: 18px 15px;
+            }
+
+            .settings-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-revoke-actions,
+            .settings-revoke-actions input,
+            .settings-revoke-actions button {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
-<body>
+<body data-theme="{{ auth()->user()->theme ?? 'light' }}">
 <div class="shell">
 
     <aside class="sidebar">
@@ -1791,6 +2481,15 @@
                 My Tasks
             </a>
 
+            <a href="{{ route('notifications.index') }}"
+               class="{{ request()->routeIs('notifications.*') ? 'active' : '' }}">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10 21h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                </svg>
+                Notifications
+            </a>
+
             <a href="{{ route('dashboard') }}#calendar">
                 <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
                     <rect x="4" y="6" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.7"/>
@@ -1818,13 +2517,17 @@
                     <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/>
                     <path d="m19.4 15 .1.1a1.7 1.7 0 0 1-2.4 2.4l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.2a1.7 1.7 0 0 1-3.4 0v-.2a1.7 1.7 0 0 0-2.9-1.2l-.1.1a1.7 1.7 0 0 1-2.4-2.4l.1-.1a1.7 1.7 0 0 0-1.2-2.9H4a1.7 1.7 0 0 1 0-3.4h.2a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a1.7 1.7 0 0 1 2.4-2.4l.1.1a1.7 1.7 0 0 0 2.9-1.2V4a1.7 1.7 0 0 1 3.4 0v.2a1.7 1.7 0 0 0 2.9 1.2l.1-.1a1.7 1.7 0 0 1 2.4 2.4l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.2a1.7 1.7 0 0 1 0 3.4h-.2a1.7 1.7 0 0 0-1.2.9Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
                 </svg>
-                Settings
+                {{ __('Settings') }}
             </a>
         </nav>
 
         <div class="sidebar-bottom">
             <div class="account-summary">
-                <span class="account-avatar" aria-hidden="true">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                @if(auth()->user()->profile_photo_path)
+                    <img class="account-avatar" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url(auth()->user()->profile_photo_path) }}" alt="">
+                @else
+                    <span class="account-avatar" aria-hidden="true">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                @endif
                 <span class="account-details">
                     <strong>{{ auth()->user()->name }}</strong>
                     <span>{{ auth()->user()->email }}</span>
