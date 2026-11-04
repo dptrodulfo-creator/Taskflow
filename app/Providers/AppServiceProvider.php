@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Models\Task;
 use App\Observers\TaskObserver;
+use App\View\Composers\TaskflowNavigationComposer;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,5 +24,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Task::observe(TaskObserver::class);
+        View::composer('layouts.taskflow', TaskflowNavigationComposer::class);
     }
 }

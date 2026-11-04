@@ -10,6 +10,7 @@ class NotificationCenterController extends Controller
     public function __invoke(Request $request): View
     {
         $user = $request->user();
+        $user->forceFill(['notification_center_read_at' => now()])->save();
         $today = today();
 
         $upcomingTasks = $user->notify_upcoming_deadlines

@@ -25,6 +25,7 @@ class User extends Authenticatable
         'notify_overdue_tasks',
         'notify_task_completions',
         'last_login_at',
+        'notification_center_read_at',
     ];
 
     protected $hidden = [
@@ -41,6 +42,7 @@ class User extends Authenticatable
             'notify_overdue_tasks' => 'boolean',
             'notify_task_completions' => 'boolean',
             'last_login_at' => 'datetime',
+            'notification_center_read_at' => 'datetime',
         ];
     }
 

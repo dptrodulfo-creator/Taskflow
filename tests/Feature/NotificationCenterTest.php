@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\TaskActivity;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class NotificationCenterTest extends TestCase
@@ -90,6 +91,10 @@ class NotificationCenterTest extends TestCase
             ['title' => 'Completed notification task', 'status' => 'completed'],
         ]);
 
+        $this->actingAs($user)->get(route('dashboard'))
+            ->assertOk()
+            ->assertDontSee('unread notifications');
+
         $this->actingAs($user)->get(route('notifications.index'))
             ->assertOk()
             ->assertSee('Upcoming deadline reminders are turned off in Settings.')
@@ -109,5 +114,61 @@ class NotificationCenterTest extends TestCase
             ->assertSee('No deadlines in the next 7 days.')
             ->assertSee('No overdue tasks.')
             ->assertSee('Completed tasks will show up here.');
+    }
+
+    public function test_navigation_shows_unread_notification_count_until_the_center_is_visited(): void
+    {
+        $this->travelTo('2026-11-03 12:00:00');
+
+        $user = User::factory()->create([
+            'notification_center_read_at' => now()->subDay(),
+        ]);
+        $user->tasks()->createMany([
+            ['title' => 'Upcoming reminder', 'due_date' => '2026-11-04'],
+            ['title' => 'Overdue reminder', 'due_date' => '2026-11-02'],
+        ]);
+        DB::table('tasks')->where('user_id', $user->id)->update([
+            'created_at' => now()->subHour(),
+            'updated_at' => now()->subHour(),
+        ]);
+        TaskActivity::create([
+            'user_id' => $user->id,
+            'task_id' => null,
+            'task_title' => 'Recently completed task',
+            'action' => 'completed',
+        ]);
+        DB::table('task_activities')->where('user_id', $user->id)->update([
+            'created_at' => now()->subHour(),
+            'updated_at' => now()->subHour(),
+        ]);
+        $otherUser = User::factory()->create();
+        $otherUser->tasks()->create([
+            'title' => 'Another user reminder',
+            'due_date' => '2026-11-04',
+        ]);
+
+        $this->actingAs($user)->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('aria-label="3 unread notifications"', false);
+
+        $this->get(route('notifications.index'))
+            ->assertOk()
+            ->assertDontSee('aria-label="3 unread notifications"', false);
+
+        $this->assertNotNull($user->fresh()->notification_center_read_at);
+    }
+
+    public function test_sidebar_and_global_search_controls_are_rendered_in_the_app_layout(): void
+    {
+        $response = $this->actingAs(User::factory()->create())
+            ->get(route('dashboard'));
+
+        $response->assertOk()
+            ->assertSee('aria-label="Open navigation menu"', false)
+            ->assertSee('aria-label="Collapse sidebar"', false)
+            ->assertSee('aria-keyshortcuts="Control+K Meta+K"', false)
+            ->assertSee('id="global-search-dialog"', false)
+            ->assertSee('name="search"', false)
+            ->assertSee('data-tooltip="Notifications"', false);
     }
 }

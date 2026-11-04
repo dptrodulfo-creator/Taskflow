@@ -2438,91 +2438,651 @@
                 width: 100%;
             }
         }
+
+        .shell {
+            transition: grid-template-columns .24s ease;
+        }
+
+        .sidebar {
+            z-index: 20;
+            overflow: hidden;
+            min-height: 0;
+            transition: width .24s ease, transform .24s ease;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .sidebar-header .brand {
+            min-width: 0;
+        }
+
+        .sidebar-control,
+        .mobile-menu-toggle {
+            display: grid;
+            width: 38px;
+            height: 38px;
+            flex: 0 0 auto;
+            place-items: center;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: var(--white);
+            color: var(--muted);
+            cursor: pointer;
+            transition: background .18s ease, color .18s ease, transform .18s ease;
+        }
+
+        .sidebar-control:hover,
+        .mobile-menu-toggle:hover {
+            background: var(--green-soft);
+            color: var(--green);
+        }
+
+        .sidebar-control svg,
+        .mobile-menu-toggle svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .sidebar-collapse svg {
+            transition: transform .18s ease;
+        }
+
+        .sidebar-collapsed .sidebar-collapse svg {
+            transform: rotate(180deg);
+        }
+
+        .sidebar-close,
+        .mobile-menu-toggle {
+            display: none;
+        }
+
+        .nav {
+            min-height: 0;
+            overflow-y: auto;
+            align-content: start;
+        }
+
+        .nav-group {
+            display: grid;
+            gap: 4px;
+        }
+
+        .nav-group-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 30px;
+            padding: 0 12px;
+            color: #9aa49d;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.15px;
+            list-style: none;
+            text-transform: uppercase;
+        }
+
+        .nav-group-heading::-webkit-details-marker {
+            display: none;
+        }
+
+        .nav-group-heading::after {
+            content: "⌄";
+            font-size: 14px;
+            transition: transform .18s ease;
+        }
+
+        .nav-group:not([open]) .nav-group-heading::after {
+            transform: rotate(-90deg);
+        }
+
+        .nav-group-links {
+            display: grid;
+            gap: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 46px;
+            margin: 0;
+            padding: 0 13px;
+            position: relative;
+            width: 100%;
+            border: 0;
+            border-radius: 11px;
+            background: transparent;
+            color: #718077;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: background .18s ease, color .18s ease, transform .18s ease;
+        }
+
+        .nav .nav-link:hover {
+            background: #f5f8fd;
+            color: var(--ink);
+            transform: translateX(2px);
+        }
+
+        .nav .nav-link.active {
+            background: var(--green-soft);
+            color: var(--green);
+        }
+
+        .nav .nav-link svg {
+            width: 18px;
+            height: 18px;
+            flex: 0 0 auto;
+        }
+
+        .nav-copy {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .notification-badge {
+            display: inline-flex;
+            min-width: 21px;
+            height: 21px;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
+            border-radius: 999px;
+            background: #d84b4b;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .sidebar-bottom {
+            flex: 0 0 auto;
+        }
+
+        .sidebar-backdrop {
+            display: none;
+            visibility: hidden;
+            transition: opacity .24s ease, visibility .24s step-end;
+        }
+
+        body.sidebar-menu-open {
+            overflow: hidden;
+        }
+
+        .global-search-dialog {
+            width: min(520px, calc(100% - 32px));
+            max-width: none;
+            padding: 0;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: var(--white);
+            color: var(--ink);
+            box-shadow: 0 24px 80px #10231d35;
+        }
+
+        .global-search-dialog::backdrop {
+            background: #101b16a3;
+            backdrop-filter: blur(3px);
+        }
+
+        .global-search-form {
+            display: grid;
+            gap: 16px;
+            padding: 22px;
+        }
+
+        .global-search-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .global-search-heading strong {
+            font-size: 16px;
+        }
+
+        .global-search-hint {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .global-search-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 9px;
+        }
+
+        .search-trigger {
+            background: transparent;
+        }
+
+        .search-shortcut {
+            padding: 3px 6px;
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            color: var(--muted);
+            font-size: 9px;
+            white-space: nowrap;
+        }
+
+        .main {
+            animation: taskflow-page-enter .28s ease both;
+        }
+
+        @keyframes taskflow-page-enter {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .nav-link[data-tooltip]::after {
+            position: absolute;
+            z-index: 50;
+            top: 50%;
+            left: calc(100% + 10px);
+            padding: 7px 9px;
+            border-radius: 7px;
+            background: #18231d;
+            color: #fff;
+            content: attr(data-tooltip);
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-4px, -50%);
+            transition: opacity .16s ease, transform .16s ease;
+            white-space: nowrap;
+        }
+
+        .sidebar-collapsed .nav-link[data-tooltip]:hover::after,
+        .sidebar-collapsed .nav-link[data-tooltip]:focus-visible::after {
+            opacity: 1;
+            transform: translate(0, -50%);
+        }
+
+        .shell.sidebar-collapsed {
+            grid-template-columns: 82px minmax(0, 1fr);
+        }
+
+        .sidebar-collapsed .sidebar {
+            padding-right: 12px;
+            padding-left: 12px;
+        }
+
+        .sidebar-collapsed .sidebar-header {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar-collapsed .brand {
+            justify-content: center;
+            padding-right: 0;
+            padding-left: 0;
+        }
+
+        .sidebar-collapsed .brand-copy,
+        .sidebar-collapsed .nav-copy,
+        .sidebar-collapsed .nav-group-heading span,
+        .sidebar-collapsed .account-details,
+        .sidebar-collapsed .signout-label,
+        .sidebar-collapsed .search-shortcut {
+            display: none;
+        }
+
+        .sidebar-collapsed .nav-group-heading {
+            justify-content: center;
+            padding: 0;
+            font-size: 0;
+        }
+
+        .sidebar-collapsed .nav-link {
+            justify-content: center;
+            gap: 0;
+            padding: 0;
+        }
+
+        .sidebar-collapsed .sidebar-bottom {
+            align-items: center;
+            padding-right: 0;
+            padding-left: 0;
+        }
+
+        .sidebar-collapsed .account-summary {
+            justify-content: center;
+        }
+
+        .sidebar-collapsed .sidebar-bottom .btn-light {
+            justify-content: center;
+            padding: 0;
+            font-size: 0;
+        }
+
+        body[data-theme="dark"] .sidebar-control,
+        body[data-theme="dark"] .mobile-menu-toggle {
+            border-color: #354658;
+            background: #192532;
+            color: #a7b5c5;
+        }
+
+        body[data-theme="dark"] .nav-group-heading {
+            color: #9aabbd;
+        }
+
+        body[data-theme="dark"] .nav .nav-link {
+            color: #a7b5c5;
+        }
+
+        body[data-theme="dark"] .nav .nav-link:hover {
+            background: #233344;
+            color: #f2f6fb;
+        }
+
+        body[data-theme="dark"] .global-search-dialog {
+            border-color: #354658;
+            background: #192532;
+            color: #e1e9f2;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
+        }
+
+        @media(max-width: 900px) {
+            .shell,
+            .shell.sidebar-collapsed {
+                display: block;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                width: min(300px, calc(100vw - 54px));
+                height: 100dvh;
+                min-height: 0;
+                padding: 20px 17px 16px;
+                transform: translateX(-105%);
+                box-shadow: 18px 0 45px #10231d1f;
+            }
+
+            .shell.sidebar-open .sidebar {
+                transform: translateX(0);
+            }
+
+            .sidebar-header {
+                align-items: flex-start;
+            }
+
+            .sidebar-header .brand {
+                padding: 0 0 25px;
+            }
+
+            .sidebar-close {
+                display: grid;
+                margin-top: 1px;
+            }
+
+            .sidebar-collapse {
+                display: none;
+            }
+
+            .nav {
+                display: grid;
+                max-width: none;
+                overflow-x: visible;
+            }
+
+            .nav-group-heading {
+                padding-right: 12px;
+                padding-left: 12px;
+            }
+
+            .nav-link,
+            .nav a {
+                min-height: 44px;
+                flex: initial;
+                padding: 0 13px;
+                white-space: normal;
+            }
+
+            .nav-link[data-tooltip]::after {
+                display: none;
+            }
+
+            .nav-label,
+            .sidebar-bottom {
+                display: flex;
+            }
+
+            .sidebar-bottom {
+                margin-top: auto;
+            }
+
+            .sidebar-backdrop {
+                position: fixed;
+                z-index: 19;
+                inset: 0;
+                display: block;
+                border: 0;
+                background: #101b1666;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity .24s ease;
+            }
+
+            .shell.sidebar-open .sidebar-backdrop {
+                visibility: visible;
+                opacity: 1;
+                pointer-events: auto;
+                transition: opacity .24s ease, visibility .24s step-start;
+            }
+
+            .mobile-menu-toggle {
+                position: fixed;
+                z-index: 18;
+                top: 14px;
+                left: 14px;
+                display: grid;
+                box-shadow: 0 4px 14px #10231d1a;
+            }
+
+            .main {
+                padding-top: 70px;
+            }
+
+            .shell.sidebar-collapsed .sidebar {
+                padding: 20px 17px 16px;
+            }
+
+            .shell.sidebar-collapsed .sidebar-header {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+
+            .shell.sidebar-collapsed .brand {
+                justify-content: flex-start;
+                padding-right: 0;
+                padding-left: 0;
+            }
+
+            .shell.sidebar-collapsed .brand-copy,
+            .shell.sidebar-collapsed .nav-copy,
+            .shell.sidebar-collapsed .nav-group-heading span,
+            .shell.sidebar-collapsed .account-details,
+            .shell.sidebar-collapsed .signout-label,
+            .shell.sidebar-collapsed .search-shortcut {
+                display: revert;
+            }
+
+            .shell.sidebar-collapsed .nav-group-heading {
+                justify-content: space-between;
+                padding: 0 12px;
+                font-size: 10px;
+            }
+
+            .shell.sidebar-collapsed .nav-link {
+                justify-content: flex-start;
+                gap: 12px;
+                padding: 0 13px;
+            }
+
+            .shell.sidebar-collapsed .sidebar-bottom {
+                align-items: stretch;
+                padding-right: 2px;
+                padding-left: 2px;
+            }
+
+            .shell.sidebar-collapsed .account-summary {
+                justify-content: flex-start;
+            }
+
+            .shell.sidebar-collapsed .sidebar-bottom .btn-light {
+                padding: 0 12px;
+                font-size: 11px;
+            }
+        }
+
+        @media(max-width: 600px) {
+            .global-search-form {
+                padding: 18px;
+            }
+        }
     </style>
 </head>
 
 <body data-theme="{{ auth()->user()->theme ?? 'light' }}">
-<div class="shell">
+<div class="shell" id="taskflow-shell">
+    <button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-controls="taskflow-sidebar" aria-expanded="false" data-sidebar-open>
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+    </button>
+    <button class="sidebar-backdrop" type="button" aria-label="Close navigation menu" data-sidebar-close></button>
 
-    <aside class="sidebar">
-
-        <a class="brand" href="{{ route('dashboard') }}">
-            <span class="brand-mark" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none">
-                    <path d="m5 12.5 4.2 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </span>
-            <span class="brand-copy">
-                <span>Task<span>Flow</span></span>
-                <small>Make work flow</small>
-            </span>
-        </a>
-
-        <nav class="nav">
-            <div class="nav-label">Workspace</div>
-
-            <a href="{{ route('dashboard') }}"
-               class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
-                    <rect x="4" y="4" width="6" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
-                    <rect x="14" y="4" width="6" height="4" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
-                    <rect x="14" y="12" width="6" height="8" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
-                    <rect x="4" y="15" width="6" height="5" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
-                </svg>
-                Dashboard
+    <aside class="sidebar" id="taskflow-sidebar" aria-label="Main navigation">
+        <div class="sidebar-header">
+            <a class="brand" href="{{ route('dashboard') }}">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="m5 12.5 4.2 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                <span class="brand-copy">
+                    <span>Task<span>Flow</span></span>
+                    <small>Make work flow</small>
+                </span>
             </a>
-
-            <a href="{{ route('tasks.index') }}"
-               class="{{ request()->routeIs('tasks.*') ? 'active' : '' }}">
+            <button class="sidebar-control sidebar-collapse" type="button" aria-label="Collapse sidebar" aria-pressed="false" title="Collapse sidebar" data-sidebar-collapse>
                 <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
-                    <path d="M9 6h11M9 12h11M9 18h11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-                    <path d="m4 6 1 1 2-2m-3 7 1 1 2-2m-3 7 1 1 2-2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14 5 7 12l7 7M18 5v14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                My Tasks
-            </a>
-
-            <a href="{{ route('notifications.index') }}"
-               class="{{ request()->routeIs('notifications.*') ? 'active' : '' }}">
+            </button>
+            <button class="sidebar-control sidebar-close" type="button" aria-label="Close navigation menu" data-sidebar-close>
                 <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
-                    <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M10 21h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                    <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
                 </svg>
-                Notifications
-            </a>
+            </button>
+        </div>
 
-            <a href="{{ route('dashboard') }}#calendar">
-                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
-                    <rect x="4" y="6" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.7"/>
-                    <path d="M8 4v4m8-4v4M4 10h16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-                </svg>
-                Calendar
-            </a>
+        <nav class="nav" aria-label="Workspace navigation">
+            <details class="nav-group" open>
+                <summary class="nav-group-heading"><span>Workspace</span></summary>
+                <div class="nav-group-links">
+                    <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}" aria-label="Dashboard" data-tooltip="Dashboard">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                            <rect x="4" y="4" width="6" height="7" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
+                            <rect x="14" y="4" width="6" height="4" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
+                            <rect x="14" y="12" width="6" height="8" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
+                            <rect x="4" y="15" width="6" height="5" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
+                        </svg>
+                        <span class="nav-copy">Dashboard</span>
+                    </a>
+                    <a class="nav-link {{ request()->routeIs('tasks.*') ? 'active' : '' }}" href="{{ route('tasks.index') }}" aria-label="My Tasks" data-tooltip="My Tasks">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                            <path d="M9 6h11M9 12h11M9 18h11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                            <path d="m4 6 1 1 2-2m-3 7 1 1 2-2m-3 7 1 1 2-2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="nav-copy">My Tasks</span>
+                    </a>
+                    <a class="nav-link {{ request()->routeIs('notifications.*') ? 'active' : '' }}" href="{{ route('notifications.index') }}" aria-label="Notifications" data-tooltip="Notifications">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                            <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M10 21h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                        </svg>
+                        <span class="nav-copy">Notifications</span>
+                        @if($unreadNotificationCount > 0)
+                            <span class="notification-badge" aria-label="{{ $unreadNotificationCount }} unread notifications">{{ $unreadNotificationCount > 99 ? '99+' : $unreadNotificationCount }}</span>
+                        @endif
+                    </a>
+                    <button class="nav-link search-trigger" type="button" data-open-search aria-label="Search tasks" data-tooltip="Search tasks" aria-keyshortcuts="Control+K Meta+K">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                            <circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7"/>
+                            <path d="m16 16 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                        </svg>
+                        <span class="nav-copy">Search tasks</span>
+                        <span class="search-shortcut">Ctrl K</span>
+                    </button>
+                </div>
+            </details>
 
-            <a href="{{ route('dashboard') }}#task-report">
-                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
-                    <path d="M5 19V9m7 10V5m7 14v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-                Reports
-            </a>
-
-            <a href="{{ route('tasks.create') }}" class="{{ request()->routeIs('tasks.create') ? 'active' : '' }}">
-                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                </svg>
-                New Task
-            </a>
-
-            <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">
-                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/>
-                    <path d="m19.4 15 .1.1a1.7 1.7 0 0 1-2.4 2.4l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.2a1.7 1.7 0 0 1-3.4 0v-.2a1.7 1.7 0 0 0-2.9-1.2l-.1.1a1.7 1.7 0 0 1-2.4-2.4l.1-.1a1.7 1.7 0 0 0-1.2-2.9H4a1.7 1.7 0 0 1 0-3.4h.2a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a1.7 1.7 0 0 1 2.4-2.4l.1.1a1.7 1.7 0 0 0 2.9-1.2V4a1.7 1.7 0 0 1 3.4 0v.2a1.7 1.7 0 0 0 2.9 1.2l.1-.1a1.7 1.7 0 0 1 2.4 2.4l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.2a1.7 1.7 0 0 1 0 3.4h-.2a1.7 1.7 0 0 0-1.2.9Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
-                </svg>
-                {{ __('Settings') }}
-            </a>
+            <details class="nav-group" open>
+                <summary class="nav-group-heading"><span>Manage</span></summary>
+                <div class="nav-group-links">
+                    <a class="nav-link" href="{{ route('dashboard') }}#calendar" aria-label="Calendar" data-nav-hash="#calendar" data-tooltip="Calendar">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                            <rect x="4" y="6" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.7"/>
+                            <path d="M8 4v4m8-4v4M4 10h16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                        </svg>
+                        <span class="nav-copy">Calendar</span>
+                    </a>
+                    <a class="nav-link" href="{{ route('dashboard') }}#task-report" aria-label="Reports" data-nav-hash="#task-report" data-tooltip="Reports">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                            <path d="M5 19V9m7 10V5m7 14v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <span class="nav-copy">Reports</span>
+                    </a>
+                    <a class="nav-link {{ request()->routeIs('tasks.create') ? 'active' : '' }}" href="{{ route('tasks.create') }}" aria-label="New Task" data-tooltip="New Task">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                        <span class="nav-copy">New Task</span>
+                    </a>
+                    <a class="nav-link {{ request()->routeIs('profile.*') ? 'active' : '' }}" href="{{ route('profile.edit') }}" aria-label="{{ __('Settings') }}" data-tooltip="{{ __('Settings') }}">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/>
+                            <path d="m19.4 15 .1.1a1.7 1.7 0 0 1-2.4 2.4l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.2a1.7 1.7 0 0 1-3.4 0v-.2a1.7 1.7 0 0 0-2.9-1.2l-.1.1a1.7 1.7 0 0 1-2.4-2.4l.1-.1a1.7 1.7 0 0 0-1.2-2.9H4a1.7 1.7 0 0 1 0-3.4h.2a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a1.7 1.7 0 0 1 2.4-2.4l.1.1a1.7 1.7 0 0 0 2.9-1.2V4a1.7 1.7 0 0 1 3.4 0v.2a1.7 1.7 0 0 0 2.9 1.2l.1-.1a1.7 1.7 0 0 1 2.4 2.4l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.2a1.7 1.7 0 0 1 0 3.4h-.2a1.7 1.7 0 0 0-1.2.9Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="nav-copy">{{ __('Settings') }}</span>
+                    </a>
+                </div>
+            </details>
         </nav>
 
         <div class="sidebar-bottom">
-            <div class="account-summary">
+            <div class="account-summary" role="group" aria-label="Signed in as {{ auth()->user()->name }} ({{ auth()->user()->email }})">
                 @if(auth()->user()->profile_photo_path)
                     <img class="account-avatar" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url(auth()->user()->profile_photo_path) }}" alt="">
                 @else
@@ -2535,14 +3095,28 @@
             </div>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button class="btn btn-light" style="width:100%">
+                <button class="btn btn-light" style="width:100%" aria-label="Sign out">
                     <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
                         <path d="M8 4H4v12h4m3-3 3-3-3-3m3 3H7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    Sign out
+                    <span class="signout-label">Sign out</span>
                 </button>
             </form>
         </div>
+
+        <dialog class="global-search-dialog" id="global-search-dialog" aria-labelledby="global-search-title">
+            <form class="global-search-form" method="GET" action="{{ route('tasks.index') }}">
+                <div class="global-search-heading">
+                    <strong id="global-search-title">Search your tasks</strong>
+                    <span class="global-search-hint">Press Esc to close</span>
+                </div>
+                <input type="search" name="search" placeholder="Search by task title or description..." aria-label="Search tasks" required>
+                <div class="global-search-actions">
+                    <button class="btn btn-light" type="button" data-close-search>Cancel</button>
+                    <button class="btn" type="submit">Search</button>
+                </div>
+            </form>
+        </dialog>
 
     </aside>
 
@@ -2570,6 +3144,105 @@
 </dialog>
 
 <script>
+    const taskflowShell = document.querySelector('#taskflow-shell');
+    const taskflowSidebar = document.querySelector('#taskflow-sidebar');
+    const sidebarOpenButton = document.querySelector('[data-sidebar-open]');
+    const sidebarCloseButtons = document.querySelectorAll('[data-sidebar-close]');
+    const sidebarCollapseButton = document.querySelector('[data-sidebar-collapse]');
+    const globalSearchDialog = document.querySelector('#global-search-dialog');
+    const mobileNavigationMedia = window.matchMedia('(max-width: 900px)');
+
+    const setSidebarOpen = (isOpen) => {
+        taskflowShell.classList.toggle('sidebar-open', isOpen);
+        sidebarOpenButton.setAttribute('aria-expanded', String(isOpen));
+        document.body.classList.toggle('sidebar-menu-open', isOpen);
+
+        if (mobileNavigationMedia.matches && !isOpen) {
+            taskflowSidebar.setAttribute('inert', '');
+        } else {
+            taskflowSidebar.removeAttribute('inert');
+        }
+
+        if (isOpen) {
+            document.querySelector('.sidebar-close').focus();
+        } else if (mobileNavigationMedia.matches) {
+            sidebarOpenButton.focus();
+        }
+    };
+
+    setSidebarOpen(false);
+    sidebarOpenButton.addEventListener('click', () => setSidebarOpen(true));
+    sidebarCloseButtons.forEach((button) => {
+        button.addEventListener('click', () => setSidebarOpen(false));
+    });
+
+    sidebarCollapseButton.addEventListener('click', () => {
+        const isCollapsed = taskflowShell.classList.toggle('sidebar-collapsed');
+        sidebarCollapseButton.setAttribute('aria-pressed', String(isCollapsed));
+        sidebarCollapseButton.setAttribute('aria-label', isCollapsed ? 'Expand sidebar' : 'Collapse sidebar');
+        sidebarCollapseButton.setAttribute('title', isCollapsed ? 'Expand sidebar' : 'Collapse sidebar');
+        localStorage.setItem('taskflow-sidebar-collapsed', String(isCollapsed));
+    });
+
+    if (localStorage.getItem('taskflow-sidebar-collapsed') === 'true') {
+        taskflowShell.classList.add('sidebar-collapsed');
+        sidebarCollapseButton.setAttribute('aria-pressed', 'true');
+        sidebarCollapseButton.setAttribute('aria-label', 'Expand sidebar');
+        sidebarCollapseButton.setAttribute('title', 'Expand sidebar');
+    }
+
+    mobileNavigationMedia.addEventListener('change', () => {
+        setSidebarOpen(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            setSidebarOpen(false);
+        }
+
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+            event.preventDefault();
+
+            if (!globalSearchDialog.open) {
+                globalSearchDialog.showModal();
+            }
+
+            globalSearchDialog.querySelector('input[name="search"]').focus();
+        }
+    });
+
+    document.querySelectorAll('[data-open-search]').forEach((button) => {
+        button.addEventListener('click', () => {
+            if (!globalSearchDialog.open) {
+                globalSearchDialog.showModal();
+            }
+
+            globalSearchDialog.querySelector('input[name="search"]').focus();
+        });
+    });
+
+    document.querySelector('[data-close-search]').addEventListener('click', () => {
+        globalSearchDialog.close();
+    });
+
+    globalSearchDialog.addEventListener('click', (event) => {
+        if (event.target === globalSearchDialog) {
+            globalSearchDialog.close();
+        }
+    });
+
+    const currentHashLink = Array.from(document.querySelectorAll('[data-nav-hash]'))
+        .find((link) => link.dataset.navHash === window.location.hash);
+
+    if (currentHashLink) {
+        document.querySelector('.nav-link.active')?.classList.remove('active');
+        currentHashLink.classList.add('active');
+    }
+
+    document.querySelectorAll('.nav a').forEach((link) => {
+        link.addEventListener('click', () => setSidebarOpen(false));
+    });
+
     const deleteDialog = document.querySelector('#delete-confirmation');
     const deleteTaskTitle = deleteDialog.querySelector('[data-delete-task-title]');
     let taskFormToDelete = null;
