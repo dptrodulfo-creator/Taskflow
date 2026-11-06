@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use Carbon\WeekDay;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\View\View;
@@ -55,8 +56,8 @@ class DashboardController extends Controller
         $calendarMonth = isset($filters['month'])
             ? Carbon::createFromFormat('!Y-m', $filters['month'])
             : Carbon::now()->startOfMonth();
-        $calendarStart = $calendarMonth->copy()->startOfWeek(Carbon::MONDAY);
-        $calendarEnd = $calendarMonth->copy()->endOfMonth()->endOfWeek(Carbon::SUNDAY);
+        $calendarStart = $calendarMonth->copy()->startOfWeek(WeekDay::Monday);
+        $calendarEnd = $calendarMonth->copy()->endOfMonth()->endOfWeek(WeekDay::Sunday);
         $calendarTaskCounts = $user->tasks()
             ->whereBetween('due_date', [$calendarStart, $calendarEnd->copy()->endOfDay()])
             ->selectRaw('due_date, COUNT(*) as aggregate')
