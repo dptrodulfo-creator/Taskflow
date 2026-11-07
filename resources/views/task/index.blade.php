@@ -17,6 +17,13 @@
 
 <section class="panel">
 
+    @if (session('success'))
+        <div id="delete-confirmation" class="task-notification" role="status" x-data="{ visible: true }" x-show="visible">
+            <span>{{ session('success') }}</span>
+            <button type="button" aria-label="Dismiss notification" @click="visible = false">Dismiss notification</button>
+        </div>
+    @endif
+
     <form method="GET" action="{{ route('tasks.index') }}" class="filters">
 
         <div class="field search">
@@ -73,6 +80,15 @@
                 type="date"
                 name="due_date"
                 value="{{ request('due_date') }}"
+            >
+        </div>
+        <div class="field">
+            <label for="due-after-filter">Due after</label>
+            <input
+                id="due-after-filter"
+                type="date"
+                name="due_after"
+                value="{{ request('due_after') }}"
             >
         </div>
 
@@ -185,6 +201,7 @@
                                         class="delete-task-form"
                                         data-confirm-delete
                                         data-task-title="{{ $task->title }}"
+                                        onsubmit="return confirm('Are you sure you want to delete this task?')"
                                     >
                                         @csrf
                                         @method('DELETE')

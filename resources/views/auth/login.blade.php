@@ -43,4 +43,8 @@
             <a href="{{ route('register') }}" class="font-semibold text-[#287a52] transition hover:text-[#1d5e3d] focus:outline-none focus:ring-2 focus:ring-[#287a52] focus:ring-offset-2">{{ __('Create an account') }}</a>
         @endif
     </p>
+
+    <p class="mt-4 text-center text-sm text-[#78847d]">
+        <a href="{{ route('admin.login') }}" class="font-medium text-[#287a52] transition hover:text-[#1d5e3d]">{{ __('Administrator sign in') }}</a>
+    </p>
 </x-guest-layout>

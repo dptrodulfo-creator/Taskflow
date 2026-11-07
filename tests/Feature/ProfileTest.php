@@ -147,7 +147,7 @@ class ProfileTest extends TestCase
 
         $this->get('/profile')
             ->assertOk()
-            ->assertSee('<html lang="fil">', false)
+            ->assertSee('lang="fil"', false)
             ->assertSee('data-theme="dark"', false)
             ->assertSee('Mga Setting');
     }

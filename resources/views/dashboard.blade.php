@@ -16,20 +16,17 @@
     @endphp
 
     <header class="top-toolbar">
-        <label class="search-box" aria-label="Search tasks">
+        <form method="GET" action="{{ route('tasks.index') }}" class="search-box" role="search" aria-label="Search tasks">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.8"/>
                 <path d="M16 16L21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
             </svg>
-            <input type="text" value="" placeholder="Search tasks, projects, or press Ctrl + K..." />
-        </label>
+            <input type="search" name="search" value="{{ request('search') }}" placeholder="Search tasks..." />
+        </form>
 
         <div class="toolbar-actions">
             <div class="status-pill">
-                <span>57%</span>
-                <svg viewBox="0 0 16 16" fill="none" width="14" height="14" aria-hidden="true">
-                    <path d="M4 6.5L8 10.5L12 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                <span>{{ $progress }}% complete</span>
             </div>
             <button class="toolbar-icon" type="button" aria-label="Notifications">
                 <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true">
@@ -63,7 +60,7 @@
                     <p>Stay focused, keep building your goals. You got this!</p>
                 </div>
 
-                <button class="primary-btn" type="button">+ Add new task</button>
+                <a class="primary-btn" href="{{ route('tasks.create') }}">+ Add new task</a>
             </div>
 
             <div class="stats-grid">
@@ -73,7 +70,7 @@
                         <span class="stat-icon blue" aria-hidden="true">☰</span>
                     </div>
                     <div class="stat-value">{{ $stats['total'] }}</div>
-                    <div class="stat-meta"><span class="trend-up">↑</span> 12% from last month</div>
+                    <div class="stat-meta">Tasks in your account</div>
                 </article>
 
                 <article class="stat-card">
@@ -82,7 +79,7 @@
                         <span class="stat-icon yellow" aria-hidden="true">◔</span>
                     </div>
                     <div class="stat-value">{{ $stats['pending'] }}</div>
-                    <div class="stat-meta"><span class="trend-down">↓</span> 8% from last week</div>
+                    <div class="stat-meta">Tasks to start</div>
                 </article>
 
                 <article class="stat-card">
@@ -91,7 +88,7 @@
                         <span class="stat-icon green" aria-hidden="true">✓</span>
                     </div>
                     <div class="stat-value">{{ $stats['in_progress'] }}</div>
-                    <div class="stat-meta"><span class="trend-up">↑</span> 25% completion rate</div>
+                    <div class="stat-meta">Tasks in progress</div>
                 </article>
 
                 <article class="stat-card">
@@ -100,7 +97,7 @@
                         <span class="stat-icon purple" aria-hidden="true">✦</span>
                     </div>
                     <div class="stat-value">{{ $stats['completed'] }}</div>
-                    <div class="stat-meta"><span class="trend-up">↑</span> 7% increase</div>
+                    <div class="stat-meta">Tasks completed</div>
                 </article>
             </div>
 
@@ -164,7 +161,7 @@
                         </g>
                     </svg>
 
-                    <div class="chart-legend"><span class="dot"></span> 12 tasks</div>
+                    <div class="chart-legend"><span class="dot"></span> {{ $taskChart->sum('count') }} {{ $taskChart->sum('count') === 1 ? 'task' : 'tasks' }} created in the last six months</div>
                 </section>
             </div>
 
@@ -176,10 +173,10 @@
                     </div>
 
                     <div class="task-tabs">
-                        <button class="task-tab active" type="button">All</button>
-                        <button class="task-tab" type="button">In progress</button>
-                        <button class="task-tab" type="button">Pending</button>
-                        <button class="task-tab" type="button">Completed</button>
+                        <a class="task-tab active" href="{{ route('tasks.index') }}">All</a>
+                        <a class="task-tab" href="{{ route('tasks.index', ['status' => 'in_progress']) }}">In progress</a>
+                        <a class="task-tab" href="{{ route('tasks.index', ['status' => 'todo']) }}">Pending</a>
+                        <a class="task-tab" href="{{ route('tasks.index', ['status' => 'completed']) }}">Completed</a>
                     </div>
 
                     @if ($recentTasks->isEmpty())
@@ -199,12 +196,12 @@
                     @endif
                 </section>
 
-                <section class="panel calendar-panel">
+                <section class="panel calendar-panel" id="calendar">
                     <div class="calendar-header">
                         <h3>{{ $calendarMonth->format('F Y') }}</h3>
                         <div class="calendar-navs">
-                            <button type="button" aria-label="Previous month">‹</button>
-                            <button type="button" aria-label="Next month">›</button>
+                            <a href="{{ route('dashboard', ['month' => $calendarMonth->copy()->subMonth()->format('Y-m')]) }}#calendar" aria-label="Previous month">‹</a>
+                            <a href="{{ route('dashboard', ['month' => $calendarMonth->copy()->addMonth()->format('Y-m')]) }}#calendar" aria-label="Next month">›</a>
                         </div>
                     </div>
 
@@ -232,32 +229,30 @@
                 </div>
 
                 <div class="quick-action-list">
-                    <button class="quick-action blue" type="button">
+                    <a class="quick-action blue" href="{{ route('tasks.create') }}">
                         <span class="quick-action-icon">＋</span>
                         <span class="quick-action-copy">
                             <strong>Create New Task</strong>
                             <span>Add a new task quickly</span>
                         </span>
                         <span class="arrow">→</span>
-                    </button>
-
-                    <button class="quick-action purple" type="button">
+                    </a>
+                    <a class="quick-action purple" href="{{ route('dashboard', ['month' => $calendarMonth->format('Y-m')]) }}#calendar">
                         <span class="quick-action-icon">◫</span>
                         <span class="quick-action-copy">
                             <strong>View Calendar</strong>
                             <span>Check your schedule</span>
                         </span>
                         <span class="arrow">→</span>
-                    </button>
-
-                    <button class="quick-action green" type="button">
+                    </a>
+                    <a class="quick-action green" href="{{ route('tasks.index') }}">
                         <span class="quick-action-icon">▣</span>
                         <span class="quick-action-copy">
-                            <strong>Generate Report</strong>
-                            <span>View productivity stats</span>
+                            <strong>Review All Tasks</strong>
+                            <span>Filter and manage your tasks</span>
                         </span>
                         <span class="arrow">→</span>
-                    </button>
+                    </a>
                 </div>
             </section>
 
@@ -294,8 +289,8 @@
             <div class="motivation-card">
                 <span class="rocket" aria-hidden="true">🚀</span>
                 <h4>Keep going!</h4>
-                <p>You’re 54% there this month.</p>
-                <div class="progress-line"><span></span></div>
+                <p>{{ $progress }}% of your tasks are complete.</p>
+                <div class="progress-line"><span style="width: {{ $progress }}%;"></span></div>
             </div>
 
             <section class="panel">

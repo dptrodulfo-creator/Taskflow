@@ -135,6 +135,29 @@ class TaskPageControllerTest extends TestCase
             ->assertViewHas('tasks', fn ($tasks): bool => $tasks->pluck('title')->all() === ['Task due today']);
     }
 
+    public function test_task_list_can_be_filtered_to_tasks_due_after_a_date(): void
+    {
+        $user = User::factory()->create();
+        $user->tasks()->create([
+            'title' => 'Task due before cutoff',
+            'due_date' => '2026-11-14',
+        ]);
+        $user->tasks()->create([
+            'title' => 'Task due on cutoff',
+            'due_date' => '2026-11-15',
+        ]);
+        $user->tasks()->create([
+            'title' => 'Task due after cutoff',
+            'due_date' => '2026-11-16',
+        ]);
+
+        $response = $this->actingAs($user)->get(route('tasks.index', ['due_after' => '2026-11-15']));
+
+        $response->assertOk()
+            ->assertSee('id="due-after-filter"', false)
+            ->assertViewHas('tasks', fn ($tasks): bool => $tasks->pluck('title')->all() === ['Task due after cutoff']);
+    }
+
     public function test_task_list_combines_search_status_priority_and_due_date_filters(): void
     {
         $user = User::factory()->create();
@@ -215,6 +238,38 @@ class TaskPageControllerTest extends TestCase
                 'Soon high priority',
                 'Middle medium priority',
                 'Later low priority',
+            ]);
+    }
+
+    public function test_task_list_respects_the_requested_sort_direction_for_statuses(): void
+    {
+        $user = User::factory()->create();
+        $user->tasks()->create([
+            'title' => 'Later low priority',
+            'priority' => 'low',
+            'status' => 'todo',
+            'due_date' => '2026-11-20',
+        ]);
+        $user->tasks()->create([
+            'title' => 'Soon high priority',
+            'priority' => 'high',
+            'status' => 'completed',
+            'due_date' => '2026-11-10',
+        ]);
+        $user->tasks()->create([
+            'title' => 'Middle medium priority',
+            'priority' => 'medium',
+            'status' => 'in_progress',
+            'due_date' => '2026-11-15',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('tasks.index', ['sort' => 'status', 'direction' => 'desc']))
+            ->assertOk()
+            ->assertViewHas('tasks', fn ($tasks): bool => $tasks->pluck('title')->all() === [
+                'Later low priority',
+                'Middle medium priority',
+                'Soon high priority',
             ]);
     }
 

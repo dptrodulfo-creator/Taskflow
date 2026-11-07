@@ -12,6 +12,10 @@ class User extends Authenticatable
     use HasFactory;
     use Notifiable;
 
+    protected $attributes = [
+        'is_admin' => false,
+    ];
+
     protected $fillable = [
         'name',
         'email',
@@ -38,6 +42,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
             'notify_upcoming_deadlines' => 'boolean',
             'notify_overdue_tasks' => 'boolean',
             'notify_task_completions' => 'boolean',
@@ -54,5 +59,10 @@ class User extends Authenticatable
     public function taskActivities(): HasMany
     {
         return $this->hasMany(TaskActivity::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return (bool) $this->is_admin;
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="{{ auth()->user()?->theme ?? 'light' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -61,7 +61,6 @@
         .nav-badge { margin-left: auto; min-width: 22px; height: 22px; padding: 0 7px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; background: #ef4444; color: #fff; font-size: 0.7rem; font-weight: 700; line-height: 1; }
         .sidebar-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
         .sidebar-toggle { width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,0.7); color: var(--text); font-size: 1rem; cursor: pointer; }
-        .global-search-dialog { display: none; }
         .nav-item .nav-icon::before { content: ""; width: 12px; height: 12px; display: block; border: 1.7px solid currentColor; border-radius: 4px; box-sizing: border-box; }
         .nav-item:nth-child(2) .nav-icon::before { border-radius: 2px; box-shadow: inset 0 0 0 1px currentColor; }
         .nav-item:nth-child(3) .nav-icon::before, .nav-item:nth-child(4) .nav-icon::before, .nav-item:nth-child(5) .nav-icon::before, .nav-item:nth-child(6) .nav-icon::before, .nav-item:nth-child(7) .nav-icon::before { border-radius: 50%; border-width: 1.5px; }
@@ -196,9 +195,204 @@
         @media (max-width: 1100px) { .dashboard-layout { grid-template-columns: 1fr; } .right-rail { order: -1; } }
         @media (max-width: 960px) { .shell { display: block; } .sidebar { width: 100%; border-right: 0; border-bottom: 1px solid var(--line); } .nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); } .main { padding: 18px 18px 24px; } .stats-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } .analytics-row, .lower-grid { grid-template-columns: 1fr; } }
         @media (max-width: 620px) { .toolbar-actions { display: none; } .welcome-row { flex-direction: column; align-items: flex-start; } .stats-grid { grid-template-columns: 1fr; } .task-row { grid-template-columns: 22px 1fr; } .task-row .priority-label, .task-row .task-date { grid-column: 2; } }
+    .primary-btn,
+    .quick-action,
+    .task-tabs a {
+        text-decoration: none;
+    }
+
+    .primary-btn,
+    .task-tabs a {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .calendar-navs a {
+        display: inline-flex;
+        width: 28px;
+        height: 28px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255,255,255,0.7);
+        color: var(--text);
+        font-size: 1rem;
+        text-decoration: none;
+    }
+
+    .task-notification {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+        padding: 14px 18px;
+        border: 1px solid #a7f3d0;
+        border-radius: 14px;
+        background: #ecfdf5;
+        color: #047857;
+    }
+
+    .task-notification button {
+        border: 0;
+        background: transparent;
+        color: inherit;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .global-search-dialog {
+        width: min(92vw, 640px);
+        max-width: none;
+        padding: 0;
+        border: 0;
+        border-radius: 16px;
+        background: transparent;
+    }
+
+    .global-search-dialog::backdrop {
+        background: rgba(15, 23, 42, 0.48);
+        backdrop-filter: blur(4px);
+    }
+
+    .global-search-dialog form {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--card);
+        box-shadow: var(--shadow);
+    }
+
+    .global-search-dialog .search-box {
+        flex: 1;
+    }
+
+    .global-search-dialog [data-close-global-search] {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px 12px;
+        background: var(--card);
+        color: var(--text);
+        cursor: pointer;
+    }
+
+    html[data-theme="dark"] {
+        color-scheme: dark;
+        --bg: #0b1220;
+        --panel: #111827;
+        --shell: #0f172a;
+        --sidebar-bg: #111827;
+        --card: #1f2937;
+        --line: #334155;
+        --line-strong: #475569;
+        --text: #e5e7eb;
+        --muted: #9ca3af;
+        --muted-soft: #94a3b8;
+        --primary: #60a5fa;
+        --primary-soft: #1e3a8a;
+        --primary-dark: #3b82f6;
+        --success-soft: #064e3b;
+        --warning-soft: #422006;
+        --danger-soft: #450a0a;
+        --purple-soft: #2e1065;
+        --shadow: 0 18px 36px rgba(0, 0, 0, 0.3);
+    }
+
+    html[data-theme="dark"] .sidebar {
+        background: var(--sidebar-bg);
+        border-right-color: var(--line);
+    }
+
+    html[data-theme="dark"] .nav-item {
+        color: var(--muted);
+    }
+
+    html[data-theme="dark"] .nav-item.active {
+        background: var(--primary-soft);
+        color: var(--primary);
+    }
+
+    html[data-theme="dark"] .panel,
+    html[data-theme="dark"] .stat-card,
+    html[data-theme="dark"] .search-box,
+    html[data-theme="dark"] .status-pill,
+    html[data-theme="dark"] .toolbar-icon,
+    html[data-theme="dark"] .toolbar-share,
+    html[data-theme="dark"] .quick-action {
+        border-color: var(--line);
+        background: var(--card);
+        color: var(--text);
+    }
+
+    html[data-theme="dark"] .task-tab,
+    html[data-theme="dark"] .calendar-day,
+    html[data-theme="dark"] .calendar-navs button,
+    html[data-theme="dark"] .calendar-navs a {
+        border-color: var(--line);
+        background: var(--card);
+        color: var(--text);
+    }
+
+    html[data-theme="dark"] .task-tab.active {
+        background: var(--primary-soft);
+        color: var(--primary);
+    }
+
+    html[data-theme="dark"] .task-check {
+        border-color: var(--line-strong);
+        background: var(--card);
+    }
+
+    html[data-theme="dark"] .priority-label.low {
+        background: #064e3b;
+        color: #6ee7b7;
+    }
+
+    html[data-theme="dark"] .priority-label.medium {
+        background: #422006;
+        color: #fcd34d;
+    }
+
+    html[data-theme="dark"] .priority-label.high {
+        background: #450a0a;
+        color: #fca5a5;
+    }
+
+    html[data-theme="dark"] .calendar-day.outside-month {
+        background: rgba(15, 23, 42, 0.35);
+        color: var(--muted-soft);
+    }
+
+    html[data-theme="dark"] .task-notification {
+        border-color: #065f46;
+        background: #052e23;
+        color: #a7f3d0;
+    }
+
+    html[data-theme="dark"] .global-search-dialog form {
+        border-color: var(--line);
+        background: var(--card);
+    }
     </style>
+    @vite(['resources/js/app.js'])
 </head>
 <body>
+    <dialog id="global-search-dialog" class="global-search-dialog" aria-label="Global search">
+        <form action="{{ route('tasks.index') }}" method="GET">
+            <label class="search-box" aria-label="Search tasks">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M16 16L21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+                <input type="search" name="search" value="" placeholder="Search tasks..." aria-keyshortcuts="Control+K Meta+K" />
+            </label>
+            <button type="button" data-close-global-search>Close</button>
+        </form>
+    </dialog>
     <div class="shell">
         <aside class="sidebar">
             <div class="sidebar-header">
@@ -213,8 +407,8 @@
             <nav class="nav" aria-label="Main navigation">
                 <a href="{{ route('dashboard') }}" class="nav-item active"><span class="nav-icon" aria-hidden="true"></span><span>Dashboard</span></a>
                 <a href="{{ route('tasks.index') }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>My Tasks</span></a>
-                <a href="{{ route('tasks.index', ['status' => 'todo']) }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Today</span></a>
-                <a href="{{ route('tasks.index', ['status' => 'in_progress']) }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Upcoming</span></a>
+                <a href="{{ route('tasks.index', ['due_date' => today()->toDateString()]) }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Today</span></a>
+                <a href="{{ route('tasks.index', ['due_after' => today()->toDateString()]) }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Upcoming</span></a>
                 <a href="{{ route('tasks.index', ['status' => 'completed']) }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Completed</span></a>
                 <a href="{{ route('notifications.index') }}" class="nav-item" data-tooltip="Notifications">
                     <span class="nav-icon" aria-hidden="true"></span>
@@ -223,12 +417,15 @@
                         <span class="nav-badge" aria-label="{{ $unreadNotificationCount }} unread notifications">{{ $unreadNotificationCount }}</span>
                     @endif
                 </a>
+                @if (auth()->user()->isAdmin())
+                    <a href="{{ route('admin.dashboard') }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Admin Console</span></a>
+                @endif
             </nav>
 
             <div class="nav-label">Manage</div>
             <nav class="nav" aria-label="Management navigation">
                 <a href="{{ route('dashboard') }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Calendar</span></a>
-                <a href="{{ route('tasks.index') }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Reports</span></a>
+                <a href="{{ route('dashboard') }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Task analytics</span></a>
                 <a href="{{ route('tasks.create') }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>New Task</span></a>
                 <a href="{{ route('profile.edit') }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Settings</span></a>
             </nav>
@@ -250,17 +447,6 @@
 
         <main class="main">
             <div class="content-shell">
-                <div id="global-search-dialog" class="global-search-dialog" role="dialog" aria-modal="false" aria-label="Global search">
-                    <form action="{{ route('tasks.index') }}" method="GET">
-                        <label class="search-box" aria-label="Search tasks" style="display:none;">
-                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.8"/>
-                                <path d="M16 16L21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                            </svg>
-                            <input type="search" name="search" value="" placeholder="Search tasks..." aria-keyshortcuts="Control+K Meta+K" />
-                        </label>
-                    </form>
-                </div>
                 @yield('content')
             </div>
         </main>

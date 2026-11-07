@@ -17,6 +17,7 @@ class TaskPageController extends Controller
             'status' => ['nullable', Rule::in(['todo', 'in_progress', 'completed'])],
             'priority' => ['nullable', Rule::in(['low', 'medium', 'high'])],
             'due_date' => ['nullable', 'date_format:Y-m-d'],
+            'due_after' => ['nullable', 'date_format:Y-m-d'],
             'sort' => ['nullable', Rule::in(['created_at', 'due_date', 'priority', 'status'])],
             'direction' => ['nullable', Rule::in(['asc', 'desc'])],
         ]);
@@ -30,7 +31,7 @@ class TaskPageController extends Controller
             'status' => 'status',
         ];
 
-        $tasks = $request->user()
+        $tasksQuery = $request->user()
             ->tasks()
             ->when($filters['search'] ?? null, function ($query, string $search): void {
                 $query->where('title', 'like', "%{$search}%");
@@ -44,12 +45,16 @@ class TaskPageController extends Controller
             ->when($filters['due_date'] ?? null, function ($query, string $dueDate): void {
                 $query->whereDate('due_date', $dueDate);
             })
-            ->orderBy($sortColumns[$sort], $direction)
-            ->when($sort !== 'created_at', function ($query): void {
-                $query->latest();
+            ->when($filters['due_after'] ?? null, function ($query, string $dueAfter): void {
+                $query->whereDate('due_date', '>', $dueAfter);
             })
-            ->paginate(10)
-            ->withQueryString();
+            ->orderBy($sortColumns[$sort], $direction);
+
+        if ($sort !== 'created_at') {
+            $tasksQuery->orderBy('created_at', 'desc');
+        }
+
+        $tasks = $tasksQuery->paginate(10)->withQueryString();
 
         return view('task.index', compact('direction', 'sort', 'tasks'));
     }
