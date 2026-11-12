@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use RuntimeException;
 
 class AdminAccountSeeder extends Seeder
@@ -27,6 +28,8 @@ class AdminAccountSeeder extends Seeder
             $email = filled($email) ? $email : $this->command->ask('Admin email');
             $password = filled($password) ? $password : $this->command->secret('Admin password (minimum 12 characters)');
         }
+
+        $email = Str::lower(trim((string) $email));
 
         $admin = Validator::make([
             'name' => config('admin.name'),

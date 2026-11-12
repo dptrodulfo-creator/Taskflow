@@ -28,19 +28,20 @@
             <div class="status-pill">
                 <span>{{ $progress }}% complete</span>
             </div>
-            <button class="toolbar-icon" type="button" aria-label="Notifications">
+            <a class="toolbar-icon" href="{{ route('notifications.index') }}" aria-label="Notifications">
                 <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true">
                     <path d="M8 17H16L15 15.5V11.5C15 9.6 13.7 8 12 8C10.3 8 9 9.6 9 11.5V15.5L8 17Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
                     <path d="M10.5 19C11 19.8 11.5 20 12 20C12.5 20 13 19.8 13.5 19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
                 </svg>
-            </button>
-            <button class="toolbar-share" type="button">
+            </a>
+            <button class="toolbar-share" type="button" data-share-dashboard>
                 <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true">
                     <path d="M15 8L9 12L15 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M5 12H19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                 </svg>
                 <span>Share</span>
             </button>
+            <span class="share-feedback" role="status" aria-live="polite" data-share-status></span>
             <div class="profile-mini">
                 <div class="avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
                 <div class="meta">
@@ -101,7 +102,7 @@
                 </article>
             </div>
 
-            <div class="analytics-row">
+            <div class="analytics-row" id="analytics">
                 <section class="panel">
                     <div class="panel-head">
                         <h3>Task progress overview</h3>
@@ -139,11 +140,11 @@
 
                 <section class="panel chart-panel">
                     <div class="panel-head">
-                        <h3>Daily Task Trend</h3>
-                        <span class="mini-link">7 days</span>
+                        <h3>Monthly Task Trend</h3>
+                        <span class="mini-link">Last 6 months</span>
                     </div>
 
-                    <svg class="mini-chart" viewBox="0 0 300 170" aria-label="Daily task trend chart" role="img">
+                    <svg class="mini-chart" viewBox="0 0 300 170" aria-label="Monthly task trend for the last six months" role="img">
                         <g stroke="#edf1f5" stroke-width="1">
                             <line x1="18" y1="20" x2="282" y2="20"/>
                             <line x1="18" y1="60" x2="282" y2="60"/>

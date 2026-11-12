@@ -172,6 +172,7 @@ class ProfileTest extends TestCase
 
     public function test_profile_page_shows_account_creation_login_and_security_controls(): void
     {
+        config(['session.driver' => 'database']);
         $user = User::factory()->create(['last_login_at' => now()]);
 
         $this->actingAs($user)->get('/profile')
@@ -225,8 +226,32 @@ class ProfileTest extends TestCase
             ->assertDontSee('Expired Browser');
     }
 
+    public function test_profile_hides_session_management_when_the_database_session_driver_is_disabled(): void
+    {
+        config(['session.driver' => 'file']);
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->get('/profile')
+            ->assertOk()
+            ->assertSee('Session management is available when the database session driver is enabled.')
+            ->assertDontSee('class="settings-revoke-all"', false);
+    }
+
+    public function test_sign_out_everywhere_is_rejected_when_the_database_session_driver_is_disabled(): void
+    {
+        config(['session.driver' => 'file']);
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->delete(route('profile.sessions.destroy-all'), [
+            'password' => 'password',
+        ])->assertStatus(409);
+
+        $this->assertAuthenticatedAs($user);
+    }
+
     public function test_user_can_revoke_another_owned_session_but_not_another_users_session(): void
     {
+        config(['session.driver' => 'database']);
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
         DB::table('sessions')->insert([
@@ -257,6 +282,7 @@ class ProfileTest extends TestCase
 
     public function test_user_can_sign_out_from_all_devices_after_confirming_password(): void
     {
+        config(['session.driver' => 'database']);
         $user = User::factory()->create(['remember_token' => 'old-remember-token']);
         $otherUser = User::factory()->create();
         DB::table('sessions')->insert([
@@ -294,6 +320,7 @@ class ProfileTest extends TestCase
 
     public function test_signing_out_from_all_devices_requires_the_current_password(): void
     {
+        config(['session.driver' => 'database']);
         $user = User::factory()->create();
         DB::table('sessions')->insert([
             'id' => 'still-active-session',

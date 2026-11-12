@@ -61,6 +61,9 @@
         .nav-badge { margin-left: auto; min-width: 22px; height: 22px; padding: 0 7px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; background: #ef4444; color: #fff; font-size: 0.7rem; font-weight: 700; line-height: 1; }
         .sidebar-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
         .sidebar-toggle { width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,0.7); color: var(--text); font-size: 1rem; cursor: pointer; }
+        .sidebar.sidebar-collapsed { width: 64px; }
+        .sidebar.sidebar-collapsed .brand, .sidebar.sidebar-collapsed .sidebar-content { display: none; }
+        .share-feedback { color: var(--muted); font-size: 0.75rem; }
         .nav-item .nav-icon::before { content: ""; width: 12px; height: 12px; display: block; border: 1.7px solid currentColor; border-radius: 4px; box-sizing: border-box; }
         .nav-item:nth-child(2) .nav-icon::before { border-radius: 2px; box-shadow: inset 0 0 0 1px currentColor; }
         .nav-item:nth-child(3) .nav-icon::before, .nav-item:nth-child(4) .nav-icon::before, .nav-item:nth-child(5) .nav-icon::before, .nav-item:nth-child(6) .nav-icon::before, .nav-item:nth-child(7) .nav-icon::before { border-radius: 50%; border-width: 1.5px; }
@@ -193,8 +196,8 @@
         .progress-line { height: 9px; background: rgba(29,110,242,0.12); border-radius: 999px; overflow: hidden; margin-top: 12px; }
         .progress-line span { display: block; height: 100%; width: 54%; border-radius: inherit; background: linear-gradient(90deg, var(--primary) 0%, #69a7ff 100%); }
         @media (max-width: 1100px) { .dashboard-layout { grid-template-columns: 1fr; } .right-rail { order: -1; } }
-        @media (max-width: 960px) { .shell { display: block; } .sidebar { width: 100%; border-right: 0; border-bottom: 1px solid var(--line); } .nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); } .main { padding: 18px 18px 24px; } .stats-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } .analytics-row, .lower-grid { grid-template-columns: 1fr; } }
-        @media (max-width: 620px) { .toolbar-actions { display: none; } .welcome-row { flex-direction: column; align-items: flex-start; } .stats-grid { grid-template-columns: 1fr; } .task-row { grid-template-columns: 22px 1fr; } .task-row .priority-label, .task-row .task-date { grid-column: 2; } }
+        @media (max-width: 960px) { .shell { display: block; } .sidebar { width: 100%; border-right: 0; border-bottom: 1px solid var(--line); } .sidebar.sidebar-collapsed { width: 100%; } .nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); } .main { padding: 18px 18px 24px; } .stats-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } .analytics-row, .lower-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 620px) { .toolbar-actions { display: flex; gap: 8px; } .toolbar-actions .status-pill, .toolbar-actions .profile-mini { display: none; } .toolbar-share { padding: 9px; } .welcome-row { flex-direction: column; align-items: flex-start; } .stats-grid { grid-template-columns: 1fr; } .task-row { grid-template-columns: 22px 1fr; } .task-row .priority-label, .task-row .task-date { grid-column: 2; } }
     .primary-btn,
     .quick-action,
     .task-tabs a {
@@ -396,52 +399,54 @@
     <div class="shell">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <button type="button" class="sidebar-toggle" aria-label="Open navigation menu">☰</button>
+                <button type="button" class="sidebar-toggle" data-sidebar-toggle aria-controls="sidebar-content" aria-expanded="true" aria-label="Close navigation menu">☰</button>
                 <div class="brand" style="padding: 0; font-size: 1.7rem;">
                     <span class="brand-mark" aria-hidden="true"></span>
                     <span>TaskFlow</span>
                 </div>
-                <button type="button" class="sidebar-toggle" aria-label="Collapse sidebar">✕</button>
+                <button type="button" class="sidebar-toggle" data-sidebar-toggle aria-controls="sidebar-content" aria-expanded="true" aria-label="Collapse sidebar">✕</button>
             </div>
 
-            <nav class="nav" aria-label="Main navigation">
-                <a href="{{ route('dashboard') }}" class="nav-item active"><span class="nav-icon" aria-hidden="true"></span><span>Dashboard</span></a>
-                <a href="{{ route('tasks.index') }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>My Tasks</span></a>
-                <a href="{{ route('tasks.index', ['due_date' => today()->toDateString()]) }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Today</span></a>
-                <a href="{{ route('tasks.index', ['due_after' => today()->toDateString()]) }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Upcoming</span></a>
-                <a href="{{ route('tasks.index', ['status' => 'completed']) }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Completed</span></a>
-                <a href="{{ route('notifications.index') }}" class="nav-item" data-tooltip="Notifications">
-                    <span class="nav-icon" aria-hidden="true"></span>
-                    <span>Notifications</span>
-                    @if ($unreadNotificationCount > 0)
-                        <span class="nav-badge" aria-label="{{ $unreadNotificationCount }} unread notifications">{{ $unreadNotificationCount }}</span>
+            <div class="sidebar-content" id="sidebar-content">
+                <nav class="nav" aria-label="Main navigation">
+                    <a href="{{ route('dashboard') }}" class="nav-item active"><span class="nav-icon" aria-hidden="true"></span><span>Dashboard</span></a>
+                    <a href="{{ route('tasks.index') }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>My Tasks</span></a>
+                    <a href="{{ route('tasks.index', ['due_date' => today()->toDateString()]) }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Today</span></a>
+                    <a href="{{ route('tasks.index', ['due_after' => today()->toDateString()]) }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Upcoming</span></a>
+                    <a href="{{ route('tasks.index', ['status' => 'completed']) }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Completed</span></a>
+                    <a href="{{ route('notifications.index') }}" class="nav-item" data-tooltip="Notifications">
+                        <span class="nav-icon" aria-hidden="true"></span>
+                        <span>Notifications</span>
+                        @if ($unreadNotificationCount > 0)
+                            <span class="nav-badge" aria-label="{{ $unreadNotificationCount }} unread notifications">{{ $unreadNotificationCount }}</span>
+                        @endif
+                    </a>
+                    @if (auth()->user()->isAdmin())
+                        <a href="{{ route('admin.dashboard') }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Admin Console</span></a>
                     @endif
-                </a>
-                @if (auth()->user()->isAdmin())
-                    <a href="{{ route('admin.dashboard') }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Admin Console</span></a>
-                @endif
-            </nav>
+                </nav>
 
-            <div class="nav-label">Manage</div>
-            <nav class="nav" aria-label="Management navigation">
-                <a href="{{ route('dashboard') }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Calendar</span></a>
-                <a href="{{ route('dashboard') }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Task analytics</span></a>
-                <a href="{{ route('tasks.create') }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>New Task</span></a>
-                <a href="{{ route('profile.edit') }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Settings</span></a>
-            </nav>
+                <div class="nav-label">Manage</div>
+                <nav class="nav" aria-label="Management navigation">
+                    <a href="{{ route('dashboard') }}#calendar" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Calendar</span></a>
+                    <a href="{{ route('dashboard') }}#analytics" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Task analytics</span></a>
+                    <a href="{{ route('tasks.create') }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>New Task</span></a>
+                    <a href="{{ route('profile.edit') }}" class="nav-item"><span class="nav-icon" aria-hidden="true"></span><span>Settings</span></a>
+                </nav>
 
-            <div class="sidebar-footer">
-                <div class="profile-block">
-                    <div class="profile-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
-                    <div class="profile-meta">
-                        <div class="profile-name">{{ auth()->user()->name }}</div>
-                        <div class="profile-email">{{ auth()->user()->email }}</div>
+                <div class="sidebar-footer">
+                    <div class="profile-block">
+                        <div class="profile-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
+                        <div class="profile-meta">
+                            <div class="profile-name">{{ auth()->user()->name }}</div>
+                            <div class="profile-email">{{ auth()->user()->email }}</div>
+                        </div>
                     </div>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="logout-btn">Sign out</button>
+                    </form>
                 </div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="logout-btn">Sign out</button>
-                </form>
             </div>
         </aside>
 

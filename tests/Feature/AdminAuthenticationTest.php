@@ -45,6 +45,22 @@ class AdminAuthenticationTest extends TestCase
         $response->assertRedirect(route('admin.dashboard'));
     }
 
+    public function test_admin_can_sign_in_when_email_has_different_casing_and_whitespace(): void
+    {
+        $admin = User::factory()->create([
+            'email' => 'admin@example.com',
+            'is_admin' => true,
+        ]);
+
+        $response = $this->post(route('admin.login.store'), [
+            'email' => '  ADMIN@EXAMPLE.COM  ',
+            'password' => 'password',
+        ]);
+
+        $this->assertAuthenticatedAs($admin);
+        $response->assertRedirect(route('admin.dashboard'));
+    }
+
     public function test_regular_user_cannot_sign_in_through_the_admin_login(): void
     {
         $user = User::factory()->create();
@@ -88,7 +104,7 @@ class AdminAuthenticationTest extends TestCase
     {
         config([
             'admin.name' => 'Seeded Admin',
-            'admin.email' => 'seeded-admin@example.com',
+            'admin.email' => ' SEEDED-ADMIN@EXAMPLE.COM ',
             'admin.password' => 'a-strong-test-password',
         ]);
 

@@ -238,50 +238,54 @@
             <strong>{{ $user->last_login_at?->format('F j, Y \a\t g:i A') ?? __('No sign-in information yet') }}</strong>
         </div>
 
-        <h3 class="settings-subheading">{{ __('Active sessions') }}</h3>
-        @if($activeSessions->isEmpty())
-            <p class="settings-help">{{ __('No active sessions could be found.') }}</p>
-        @else
-            <div class="settings-session-list">
-                @foreach($activeSessions as $activeSession)
-                    <div class="settings-session-row">
-                        <span class="settings-session-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" fill="none">
-                                <rect x="4" y="5" width="16" height="11" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
-                                <path d="M9 20h6m-3-4v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-                            </svg>
-                        </span>
-                        <span class="settings-session-copy">
-                            <strong>{{ $activeSession->is_current ? __('This device') : __('Signed-in device') }}</strong>
-                            <small>{{ $activeSession->user_agent ?: __('Unknown browser') }} · {{ $activeSession->ip_address ?: __('Unknown location') }}</small>
-                            <small>{{ \Illuminate\Support\Carbon::createFromTimestamp($activeSession->last_activity)->diffForHumans() }}</small>
-                        </span>
-                        @unless($activeSession->is_current)
-                            <form method="POST" action="{{ route('profile.sessions.destroy', $activeSession->id) }}">
-                                @csrf
-                                @method('DELETE')
-                                <button class="settings-text-button" type="submit">{{ __('Sign out') }}</button>
-                            </form>
-                        @endunless
-                    </div>
-                @endforeach
-            </div>
-        @endif
+        @if($databaseSessionsEnabled)
+            <h3 class="settings-subheading">{{ __('Active sessions') }}</h3>
+            @if($activeSessions->isEmpty())
+                <p class="settings-help">{{ __('No active sessions could be found.') }}</p>
+            @else
+                <div class="settings-session-list">
+                    @foreach($activeSessions as $activeSession)
+                        <div class="settings-session-row">
+                            <span class="settings-session-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <rect x="4" y="5" width="16" height="11" rx="1.5" stroke="currentColor" stroke-width="1.7"/>
+                                    <path d="M9 20h6m-3-4v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                                </svg>
+                            </span>
+                            <span class="settings-session-copy">
+                                <strong>{{ $activeSession->is_current ? __('This device') : __('Signed-in device') }}</strong>
+                                <small>{{ $activeSession->user_agent ?: __('Unknown browser') }} · {{ $activeSession->ip_address ?: __('Unknown location') }}</small>
+                                <small>{{ \Illuminate\Support\Carbon::createFromTimestamp($activeSession->last_activity)->diffForHumans() }}</small>
+                            </span>
+                            @unless($activeSession->is_current)
+                                <form method="POST" action="{{ route('profile.sessions.destroy', $activeSession->id) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="settings-text-button" type="submit">{{ __('Sign out') }}</button>
+                                </form>
+                            @endunless
+                        </div>
+                    @endforeach
+                </div>
+            @endif
 
-        <form method="POST" action="{{ route('profile.sessions.destroy-all') }}" class="settings-revoke-all" data-confirm-all-sessions>
-            @csrf
-            @method('DELETE')
-            <div>
-                <strong>{{ __('Sign out from all devices') }}</strong>
-                <p>{{ __('This will end every session, including this one. Enter your password to continue.') }}</p>
-            </div>
-            <div class="settings-revoke-actions">
-                <label class="sr-only" for="logout-all-password">{{ __('Current password') }}</label>
-                <input id="logout-all-password" type="password" name="password" autocomplete="current-password" placeholder="{{ __('Current password') }}" required>
-                <button class="btn btn-danger" type="submit">{{ __('Sign out everywhere') }}</button>
-            </div>
-            <x-input-error :messages="$errors->logoutAllDevices->get('password')" class="settings-error" />
-        </form>
+            <form method="POST" action="{{ route('profile.sessions.destroy-all') }}" class="settings-revoke-all" data-confirm-all-sessions>
+                @csrf
+                @method('DELETE')
+                <div>
+                    <strong>{{ __('Sign out from all devices') }}</strong>
+                    <p>{{ __('This will end every session, including this one. Enter your password to continue.') }}</p>
+                </div>
+                <div class="settings-revoke-actions">
+                    <label class="sr-only" for="logout-all-password">{{ __('Current password') }}</label>
+                    <input id="logout-all-password" type="password" name="password" autocomplete="current-password" placeholder="{{ __('Current password') }}" required>
+                    <button class="btn btn-danger" type="submit">{{ __('Sign out everywhere') }}</button>
+                </div>
+                <x-input-error :messages="$errors->logoutAllDevices->get('password')" class="settings-error" />
+            </form>
+        @else
+            <p class="settings-help">{{ __('Session management is available when the database session driver is enabled.') }}</p>
+        @endif
     </section>
 
     <section class="panel settings-panel settings-danger-zone" id="delete-account">

@@ -55,9 +55,15 @@ class DashboardTest extends TestCase
             ->assertSee('Nov 08, 2026')
             ->assertSee('Pending')
             ->assertSee('Add new task')
+            ->assertSee('Monthly Task Trend')
+            ->assertSee('Last 6 months')
             ->assertSee('Task progress overview')
             ->assertSee('Recent activity')
             ->assertSee(route('tasks.create'))
+            ->assertSee(route('notifications.index'))
+            ->assertSee(route('dashboard').'#calendar')
+            ->assertSee(route('dashboard').'#analytics')
+            ->assertSee('data-share-dashboard', false)
             ->assertDontSee('Another user private task');
     }
 

@@ -90,4 +90,33 @@ class AdminManagementTest extends TestCase
         $this->assertDatabaseHas('users', ['id' => $user->id, 'is_admin' => false]);
         $response->assertRedirect(route('admin.users.index'))->assertSessionHasErrors('is_admin');
     }
+
+    public function test_last_administrator_cannot_delete_their_account(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        $response = $this->actingAs($admin)->delete(route('profile.destroy'), [
+            'password' => 'password',
+        ]);
+
+        $response->assertRedirect(route('profile.edit'))
+            ->assertSessionHasErrorsIn('userDeletion', 'password');
+        $this->assertAuthenticatedAs($admin);
+        $this->assertDatabaseHas('users', ['id' => $admin->id, 'is_admin' => true]);
+    }
+
+    public function test_administrator_can_delete_their_account_when_another_administrator_remains(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $remainingAdmin = User::factory()->create(['is_admin' => true]);
+
+        $response = $this->actingAs($admin)->delete(route('profile.destroy'), [
+            'password' => 'password',
+        ]);
+
+        $response->assertRedirect('/');
+        $this->assertGuest();
+        $this->assertDatabaseMissing('users', ['id' => $admin->id]);
+        $this->assertDatabaseHas('users', ['id' => $remainingAdmin->id, 'is_admin' => true]);
+    }
 }

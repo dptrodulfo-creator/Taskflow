@@ -60,6 +60,7 @@ class ProfileController extends Controller
 
         return view('profile.edit', [
             'activeSessions' => $activeSessions,
+            'databaseSessionsEnabled' => config('session.driver') === 'database',
             'supportedTimezones' => self::TIMEZONES,
             'user' => $user,
         ]);
@@ -118,6 +119,7 @@ class ProfileController extends Controller
 
     public function revokeSession(Request $request, string $sessionId): RedirectResponse
     {
+        $this->ensureDatabaseSessionsAreEnabled();
         abort_if($sessionId === $request->session()->getId(), 422, 'The current session cannot be revoked here.');
 
         $deleted = DB::connection(config('session.connection'))
@@ -133,6 +135,7 @@ class ProfileController extends Controller
 
     public function logoutAllDevices(Request $request): RedirectResponse
     {
+        $this->ensureDatabaseSessionsAreEnabled();
         $request->validateWithBag('logoutAllDevices', [
             'password' => ['required', 'current_password'],
         ]);
@@ -152,6 +155,15 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 
+    private function ensureDatabaseSessionsAreEnabled(): void
+    {
+        abort_unless(
+            config('session.driver') === 'database',
+            409,
+            'Session management requires the database session driver.',
+        );
+    }
+
     /**
      * Delete the user's account.
      */
@@ -164,14 +176,38 @@ class ProfileController extends Controller
         $user = $request->user();
         $profilePhotoPath = $user->profile_photo_path;
 
+        $accountDeleted = DB::transaction(function () use ($user): bool {
+            $user = $user->newQuery()->lockForUpdate()->findOrFail($user->getKey());
+
+            if ($user->isAdmin()) {
+                $adminCount = $user->newQuery()
+                    ->where('is_admin', true)
+                    ->lockForUpdate()
+                    ->get(['id'])
+                    ->count();
+
+                if ($adminCount <= 1) {
+                    return false;
+                }
+            }
+
+            $user->delete();
+
+            return true;
+        });
+
+        if (! $accountDeleted) {
+            return Redirect::route('profile.edit')->withErrors([
+                'password' => __('The last administrator cannot delete their account.'),
+            ], 'userDeletion');
+        }
+
         DB::connection(config('session.connection'))
             ->table(config('session.table'))
             ->where('user_id', $user->getKey())
             ->delete();
 
         Auth::logout();
-
-        $user->delete();
 
         if ($profilePhotoPath !== null) {
             Storage::disk('public')->delete($profilePhotoPath);

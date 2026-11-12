@@ -164,8 +164,9 @@ class NotificationCenterTest extends TestCase
             ->get(route('dashboard'));
 
         $response->assertOk()
-            ->assertSee('aria-label="Open navigation menu"', false)
+            ->assertSee('aria-label="Close navigation menu"', false)
             ->assertSee('aria-label="Collapse sidebar"', false)
+            ->assertSee('data-sidebar-toggle', false)
             ->assertSee('aria-keyshortcuts="Control+K Meta+K"', false)
             ->assertSee('id="global-search-dialog"', false)
             ->assertSee('name="search"', false)
